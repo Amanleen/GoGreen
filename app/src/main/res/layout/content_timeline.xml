@@ -10,7 +10,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_timeline"
     android:orientation="vertical"
-    tools:context="com.example.amanleenpuri.gogreen.TimelineActivity">
+    tools:context="com.example.amanleenpuri.gogreen.ui.TimelineActivity">
 
     <ListView
         android:layout_width="match_parent"

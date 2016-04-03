@@ -1,4 +1,4 @@
-package com.example.amanleenpuri.gogreen;
+package com.example.amanleenpuri.gogreen.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.amanleenpuri.gogreen.R;
 
 public class LoginActivity extends AppCompatActivity {
 

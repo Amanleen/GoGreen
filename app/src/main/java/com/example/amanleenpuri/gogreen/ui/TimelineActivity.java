@@ -1,4 +1,4 @@
-package com.example.amanleenpuri.gogreen;
+package com.example.amanleenpuri.gogreen.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import com.example.amanleenpuri.gogreen.R;
+
+import java.util.ArrayList;
+
+import model.GreenEntry;
 
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -22,6 +29,12 @@ public class TimelineActivity extends AppCompatActivity
         setContentView(R.layout.activity_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
+        greenEntryArrayList = populateList();
+        System.out.println("********* green list="+greenEntryArrayList.size()+""+greenEntryArrayList.toString());
+        ListView timelinelv= (ListView)findViewById(R.id.lv_timeline);
+        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), greenEntryArrayList));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +53,22 @@ public class TimelineActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private ArrayList<GreenEntry> populateList() {
+        int countOfEnteries = 5;
+        String[] names = {"Tejal", "Amrata", "Aman", "Shah", "Kasture", "Puri","Bob"};
+        String[] dateTime = {"1d ago","2d ago", "3d ago", "5d ago","7d ago"};
+        ArrayList<GreenEntry> gl = new ArrayList<GreenEntry>();
+        for(int i=0; i<countOfEnteries; i++){
+            GreenEntry ge = new GreenEntry();
+            ge.setUserName(names[i]);
+            ge.setDateTime(dateTime[i]);
+            ge.setNumberOfStars(i);
+            gl.add(ge);
+            System.out.println("******** i=" + i);
+        }
+        return gl;
     }
 
     @Override

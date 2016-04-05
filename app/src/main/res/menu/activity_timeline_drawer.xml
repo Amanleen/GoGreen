@@ -18,6 +18,8 @@
                 android:title="Share" />
             <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
                 android:title="Send" />
+            <item android:id="@+id/event_creation" android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="Create Event" />
         </menu>
     </item>
 

@@ -12,4 +12,10 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_timeline_list_item">TimelineListItemActivity</string>
+    <string name="hintText">Let us talk something Green....</string>
+    <string name="is_question">Ask a Quetion</string>
+    <string name="post">Post</string>
+    <string name="pick_event_date">Event Date</string>
+    <string name="pick_event_time">Event Time</string>
+
 </resources>

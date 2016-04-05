@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="460dp"
+        android:ems="15"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:background="@drawable/blog_text"
+        android:textSize="30dp"
+        android:hint="@string/hintText"
+        android:typeface="serif"
+        android:paddingTop="40dp"
+        android:textColor="#003300">
+    </EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:gravity="bottom"
+        android:layout_below="@+id/editText1">
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="left"
+            android:src="@mipmap/ic_cam_icon"
+            />
+
+        <CheckBox
+            android:id="@+id/isQCheck"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/is_question"
+            android:layout_gravity="center"
+            android:checked="false"
+            android:textSize="10dp"/>
+
+        <Button
+            android:id="@+id/Button2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:background="#47d147"
+            android:text="@string/post" />
+
+    </LinearLayout>
+</RelativeLayout>

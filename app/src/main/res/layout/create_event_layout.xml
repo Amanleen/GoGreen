@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarAlwaysDrawVerticalTrack="true">
+    <EditText
+        android:id="@+id/eventNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:textSize="25dp"
+        android:hint="Event Name"
+        android:typeface="serif"
+        android:textColor="#006600"
+        android:layout_margin="20dp">
+    </EditText>
+
+    <EditText
+        android:id="@+id/eventDetailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:textSize="25dp"
+        android:lines="1"
+        android:inputType="textMultiLine"
+        android:hint="Event Description"
+        android:typeface="serif"
+        android:textColor="#006600"
+        android:layout_margin="20dp">
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView android:id="@+id/eventDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="30dp"
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:typeface="serif" />
+        <TextView android:id="@+id/eventTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="30dp"
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:typeface="serif" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_event_date"
+        android:layout_gravity="center|center_horizontal|center_vertical"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="30dp"
+        android:onClick="showDatePickerDialog" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_horizontal|center_vertical"
+        android:text="@string/pick_event_time"
+        android:layout_marginLeft="30dp"
+        android:onClick="showTimePickerDialog" />
+    </LinearLayout>
+
+
+    <fragment
+        android:id="@+id/location_map"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        class="com.google.android.gms.maps.SupportMapFragment" />
+
+
+    <Button android:id="@+id/publishEventButton"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
+        android:background="#47d147"
+        android:layout_gravity="right"
+        android:text="Publish Event"/>
+
+
+
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:typeface="serif"
+        android:text="My Mango Plant is Spoiling. What should I do?"/>
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:background="@drawable/blog_text"
+        android:textSize="25dp"
+        android:hint="Answer goes here"
+        android:typeface="serif"
+        android:textColor="#003300">
+    </EditText>
+    <Button android:id="@+id/postAnswerButton"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="#47d147"
+        android:text="Answer"/>
+
+</LinearLayout>

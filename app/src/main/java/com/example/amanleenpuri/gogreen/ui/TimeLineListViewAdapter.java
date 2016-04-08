@@ -8,7 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.amanleenpuri.gogreen.R;
 import com.squareup.picasso.Picasso;
@@ -38,21 +40,31 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
         TextView numberOfStarstv = (TextView)convertView.findViewById(R.id.tv_number_of_stars_on_timeline);
         ImageView userProfilePicOnTimeLineiv = (ImageView)convertView.findViewById(R.id.iv_timeline_image);
         ImageView articleImageiv = (ImageView)convertView.findViewById(R.id.iv_article_on_timeline);
-        
-
+        ImageView followIcon = (ImageView) convertView.findViewById(R.id.become_follower_icon);
+        ImageView sharePostIcon = (ImageView) convertView.findViewById(R.id.share_post_icon);
 
         userNameOnTimeLinetv.setText(ge.getUserName());
         timeAgoOnTimeLinetv.setText(ge.getDateTime());
         numberOfStarstv.setText(String.valueOf(ge.getNumberOfStars()));
 
+        followIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"You are following now", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        sharePostIcon.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Post has been shared", Toast.LENGTH_LONG).show();
+            }
+        });
+
         userProfilePicOnTimeLineiv.setImageResource(0);
         Picasso.with(getContext()).load(ge.getImageUrl()).placeholder(R.color.colorPrimary).into(userProfilePicOnTimeLineiv);
 
         articleImageiv.setImageResource(R.mipmap.ic_plant_pic);
-
-        /********
-         * functions on click of each image button
-         * *******/
 
         return convertView;
     }

@@ -11,7 +11,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <activity android:name=".ui.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +20,16 @@
         </activity>
         <activity
             android:name=".ui.TimelineActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".ui.SearchResultsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".ui.BlogTagAskActivity">
+        </activity>
+        <activity
+            android:name=".ui.NotificationActivity">
         </activity>
         <activity
             android:name=".ui.QuestionForumActivity">
@@ -34,6 +39,9 @@
         </activity>
         <activity
             android:name=".ui.CreateEventActivity">
+        </activity>
+        <activity
+            android:name=".ui.FollowingActivity">
         </activity>
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

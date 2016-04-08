@@ -1,9 +1,13 @@
 package com.example.amanleenpuri.gogreen.ui;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.example.amanleenpuri.gogreen.R;
 
@@ -92,6 +97,7 @@ public class TimelineActivity extends AppCompatActivity
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -104,9 +110,13 @@ public class TimelineActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchResultsActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.action_notifications) {
+            Intent intent = new Intent(this, NotificationActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -119,17 +129,15 @@ public class TimelineActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.edit_profile) {
+            //Go to Edit Profile Page
+        } else if (id == R.id.nav_following) {
+            Intent i = new Intent(getApplicationContext(),FollowingActivity.class);
+            startActivity(i);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_mywall) {
+            Intent i = new Intent(getApplicationContext(),TimelineActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.event_creation) {
             Intent i = new Intent(getApplicationContext(),CreateEventActivity.class);

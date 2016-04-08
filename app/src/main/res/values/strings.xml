@@ -17,5 +17,6 @@
     <string name="post">Post</string>
     <string name="pick_event_date">Event Date</string>
     <string name="pick_event_time">Event Time</string>
+    <string name="search_hint">Search Amr...</string>
 
 </resources>

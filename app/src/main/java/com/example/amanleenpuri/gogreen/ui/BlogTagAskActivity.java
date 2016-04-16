@@ -15,32 +15,55 @@ import android.widget.Toast;
 
 import com.example.amanleenpuri.gogreen.R;
 
+import util.ImagePicker;
+
 /**
  * Created by amrata on 4/3/16.
  */
-public class BlogTagAskActivity extends AppCompatActivity {
+public class BlogTagAskActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView iv;
     private CheckBox chkIsQ;
     Boolean Question = false;
+    static int TAKE_PICTURE = 1;
+    private static final int PICK_IMAGE_ID = 234;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blog_tag_ask_layout);
 
         ImageButton b1=(ImageButton)findViewById(R.id.imageButton1);
+        iv=(ImageView)findViewById(R.id.ivPhoto);
         CheckBox cb = (CheckBox) findViewById(R.id.isQCheck);
         Button b2=(Button)findViewById(R.id.Button2);
+        ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
 
-        if (b1 != null) {
+       b1.setOnClickListener(this);
+
+       if (b1 != null) {
             b1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, TAKE_PICTURE);
                 }
             });
 
         }
+
+        b3.setOnClickListener(this);
+
+        if (b3 != null) {
+            b3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(BlogTagAskActivity.this);
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                }
+            });
+
+        }
+
 
         chkIsQ = (CheckBox) findViewById(R.id.isQCheck);
 
@@ -78,12 +101,32 @@ public class BlogTagAskActivity extends AppCompatActivity {
 
     }
 
+    /*protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==PICK_IMAGE_ID) {
+            Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+            iv.setImageBitmap(bitmap);
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
+            Bitmap bp = (Bitmap) data.getExtras().get("data");
+            iv.setImageBitmap(bp);
+        }
+    }*/
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
 
-        Bitmap bp = (Bitmap) data.getExtras().get("data");
-        iv.setImageBitmap(bp);
+        if(resultCode != RESULT_CANCELED){
+            if (requestCode == PICK_IMAGE_ID) {
+                if (data.getExtras() == null){
+                    Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                    iv.setImageBitmap(bitmap);
+                }else{
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    iv.setImageBitmap(photo);
+                }
+            }
+        }
     }
 
     @Override
@@ -92,6 +135,8 @@ public class BlogTagAskActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
 
-
+    }
 }

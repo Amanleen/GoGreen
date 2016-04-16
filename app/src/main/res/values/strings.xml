@@ -18,5 +18,6 @@
     <string name="pick_event_date">Event Date</string>
     <string name="pick_event_time">Event Time</string>
     <string name="search_hint">Search Amr...</string>
+    <string name="pick_image_intent_text">Choose From</string>
 
 </resources>

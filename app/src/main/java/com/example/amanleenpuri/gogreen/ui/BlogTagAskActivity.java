@@ -2,10 +2,9 @@ package com.example.amanleenpuri.gogreen.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.amanleenpuri.gogreen.R;
+
+import java.io.ByteArrayOutputStream;
 
 import util.ImagePicker;
 
@@ -26,15 +27,27 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
     Boolean Question = false;
     static int TAKE_PICTURE = 1;
     private static final int PICK_IMAGE_ID = 234;
+    Bitmap _bm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blog_tag_ask_layout);
 
+        if(getIntent().hasExtra("imgArray")) {
+            //ivTree= new ImageView(this);
+            iv = (ImageView) findViewById(R.id.ivPhoto);
+            iv.setVisibility(View.VISIBLE);
+            _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);
+            iv.setImageBitmap(_bm);
+        }
+
+
         ImageButton b1=(ImageButton)findViewById(R.id.imageButton1);
-        iv=(ImageView)findViewById(R.id.ivPhoto);
-        CheckBox cb = (CheckBox) findViewById(R.id.isQCheck);
+        if(iv == null) {
+            iv = (ImageView) findViewById(R.id.ivPhoto);
+        }
+
         Button b2=(Button)findViewById(R.id.Button2);
         ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
 
@@ -119,15 +132,50 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
         if(resultCode != RESULT_CANCELED){
             if (requestCode == PICK_IMAGE_ID) {
                 if (data.getExtras() == null){
-                    Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                    final Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                    iv.setVisibility(View.VISIBLE);
                     iv.setImageBitmap(bitmap);
+                    //iv.setOnClickListener(clickListener);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
+                            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                            tagIntent.putExtra("byteArray", bs.toByteArray());
+                            startActivity(tagIntent);
+                        }
+                    });
                 }else{
-                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    final Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    iv.setVisibility(View.VISIBLE);
                     iv.setImageBitmap(photo);
+                    //iv.setOnClickListener(clickListener);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
+                            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                            photo.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                            tagIntent.putExtra("byteArray", bs.toByteArray());
+                            startActivity(tagIntent);
+                        }
+                    });
                 }
             }
         }
     }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+
+        public void onClick(View v) {
+            Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
+            Bitmap bm = null; // your bitmap
+
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.PNG, 50, bs);
+            tagIntent.putExtra("byteArray", bs.toByteArray());
+            startActivity(tagIntent);
+        }
+    };
 
     @Override
     protected void onDestroy() {

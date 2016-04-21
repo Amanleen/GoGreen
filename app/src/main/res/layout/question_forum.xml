@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="fill_parent">
 
-        <TextView android:id="@+id/questionText"
+        <!--TextView android:id="@+id/questionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="25dp"
@@ -39,7 +40,7 @@ Spraying emulsive oil on plant and Collect and burn the fallen leaves and twigs.
         android:layout_height="wrap_content"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:text="--------------------------"/>
+        android:text="=========================="/>
 
     <TextView android:id="@+id/questionTextDel"
         android:layout_width="match_parent"
@@ -62,6 +63,14 @@ Spraying emulsive oil on plant and Collect and burn the fallen leaves and twigs.
             android:layout_height="wrap_content"
             android:text="Answer"/>
 
-    </LinearLayout>
+    </LinearLayout-->
+
+    <ListView android:id="@+id/qa_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        tools:context=".ui.QuestionForumActivity"
+        tools:listitem="@layout/question_item"
+        android:focusable="true"></ListView>
 
 </LinearLayout>

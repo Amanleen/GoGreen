@@ -19,5 +19,11 @@
     <string name="pick_event_time">Event Time</string>
     <string name="search_hint">Search Amr...</string>
     <string name="pick_image_intent_text">Choose From</string>
+    <string name="answerLabel">Answers</string>
+    <string name="viewAnswers">View Answers</string>
+    <string name="ansComment">Answer/Comment</string>
+    <string name="confirmTag">Tag Me</string>
+
+
 
 </resources>

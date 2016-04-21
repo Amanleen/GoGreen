@@ -5,9 +5,22 @@ package model;
  */
 public class GreenEntry {
 
-    String userName;
-    String dateTime;
-    int numberOfStars;
+    public String userName;
+    public int userId;
+    public String text;
+    public String type;
+    public String dateTime;
+    public int numberOfStars;
+
+    public GreenEntry(){
+    }
+
+
+    public GreenEntry(String type, int userId, String text){
+        this.type = type;
+        this.userId = userId;
+        this.text = text;
+    }
 
     public String getImageUrl() {
         return imageUrl;

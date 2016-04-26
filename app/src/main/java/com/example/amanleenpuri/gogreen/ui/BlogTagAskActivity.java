@@ -1,9 +1,13 @@
 package com.example.amanleenpuri.gogreen.ui;
 
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,7 @@ import util.ImagePicker;
  */
 public class BlogTagAskActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView iv;
+    private AlertDialog levelDialog;
     private CheckBox chkIsQ;
     Boolean Question = false;
     static int TAKE_PICTURE = 1;
@@ -33,23 +38,22 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blog_tag_ask_layout);
+        iv = (ImageView) findViewById(R.id.ivPhoto);
 
         if(getIntent().hasExtra("imgArray")) {
             //ivTree= new ImageView(this);
-            iv = (ImageView) findViewById(R.id.ivPhoto);
             iv.setVisibility(View.VISIBLE);
             _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);
             iv.setImageBitmap(_bm);
         }
 
+        Button b2=(Button)findViewById(R.id.Button2);
+        ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
 
-        ImageButton b1=(ImageButton)findViewById(R.id.imageButton1);
+        /*ImageButton b1=(ImageButton)findViewById(R.id.imageButton1);
         if(iv == null) {
             iv = (ImageView) findViewById(R.id.ivPhoto);
         }
-
-        Button b2=(Button)findViewById(R.id.Button2);
-        ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
 
        b1.setOnClickListener(this);
 
@@ -62,7 +66,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
                 }
             });
 
-        }
+        }*/
 
         b3.setOnClickListener(this);
 
@@ -78,7 +82,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
         }
 
 
-        chkIsQ = (CheckBox) findViewById(R.id.isQCheck);
+        /*chkIsQ = (CheckBox) findViewById(R.id.isQCheck);
 
         chkIsQ.setOnClickListener(new View.OnClickListener() {
 
@@ -92,20 +96,61 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
                 }
 
             }
-        });
+        });*/
 
 
         if (b2 != null) {
             b2.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                    if(!Question) {
+
+                    final CharSequence[] items = {" This is a Question "," This is a Blog "};
+
+                    // Creating and Building the Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(BlogTagAskActivity.this);
+                    builder.setTitle("Please confirm");
+                   /* builder.setPositiveButton("Post as A Question", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //BlogTagAskActivity.this.finish();
+                            Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
+                            startActivity(myintent3);
+                        }
+                    })
+                            .setNegativeButton("Post as A Blog", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //dialog.cancel();
+                                    Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
+                                    startActivity(myintent2);
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();*/
+                    builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            switch(item)
+                            {
+                                case 0:
+                                    Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
+                                    startActivity(myintent3);
+                                    break;
+                                case 1:
+                                    Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
+                                    startActivity(myintent2);
+                                    break;
+                            }
+                            levelDialog.dismiss();
+                        }
+                    });
+                    levelDialog = builder.create();
+                    levelDialog.show();
+
+                    /*if(!Question) {
                         Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
                         startActivity(myintent2);
                     }else {
                         Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
                         startActivity(myintent3);
-                    }
+                    }*/
 
                 }
             });

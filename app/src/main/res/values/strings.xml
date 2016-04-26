@@ -23,6 +23,15 @@
     <string name="viewAnswers">View Answers</string>
     <string name="ansComment">Answer/Comment</string>
     <string name="confirmTag">Tag Me</string>
+    <string name="selectLoc">Show Location On Map</string>
+    <string name="enterLoc">Enter Location</string>
+    <string name="eventNameLabel">Event :</string>
+    <string name="eventDetailLabel">About :</string>
+    <string name="hostNameLabel">Host :</string>
+    <string name="eventDateLabel">On :</string>
+    <string name="eventTimeLabel">At :</string>
+    <string name="LocLabel">Where :</string>
+    <string name="takeMeToLabel">Take me to Event</string>
 
 
 

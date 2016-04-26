@@ -1,10 +1,13 @@
 package model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Tejal Shah
  *
  */
-public class Event {
+public class Event implements Parcelable {
 
     private int eventId;
     private String eventTitle;
@@ -13,8 +16,63 @@ public class Event {
     private String eventDate;
     private String eventStartTime;
     private String eventEndTime;
+    private String hostName;
     private int eventHostedById;
     private int interestAreaId;
+
+    public Event(String eTitle,String eDetail,String eLoc, String eOn,String eStart, String eEnd, int eBy){
+        eventTitle = eTitle;
+        eventDescription = eDetail;
+        eventLocation=eLoc;
+        eventDate=eOn;
+        eventStartTime = eStart;
+        eventEndTime = eEnd;
+        eventHostedById = eBy;
+        hostName = getUserNameById(eBy);
+    }
+
+
+    public Event(Parcel in) {
+        eventId = in.readInt();
+        eventTitle = in.readString();
+        eventDescription = in.readString();
+        eventLocation = in.readString();
+        eventDate = in.readString();
+        eventStartTime = in.readString();
+        eventEndTime = in.readString();
+        eventHostedById = in.readInt();
+        interestAreaId = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(eventId);
+        dest.writeString(eventTitle);
+        dest.writeString(eventDescription);
+        dest.writeString(eventLocation);
+        dest.writeString(eventDate);
+        dest.writeString(eventStartTime);
+        dest.writeString(eventEndTime);
+        dest.writeInt(eventHostedById);
+        dest.writeInt(interestAreaId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public int getEventId() {
         return eventId;
@@ -69,6 +127,11 @@ public class Event {
     }
     public void setInterestAreaId(int interestAreaId) {
         this.interestAreaId = interestAreaId;
+    }
+
+
+    public String getUserNameById(int id){
+        return "Amu";
     }
 }
 

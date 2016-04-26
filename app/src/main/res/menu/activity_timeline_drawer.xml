@@ -14,6 +14,8 @@
                 android:title="My Wall" />
             <item android:id="@+id/event_creation" android:icon="@android:drawable/ic_menu_my_calendar"
                 android:title="Create Event" />
+            <item android:id="@+id/activate_notification" android:icon="@android:drawable/ic_dialog_info"
+                android:title="Notify Sample" />
         </menu>
     </item>
 

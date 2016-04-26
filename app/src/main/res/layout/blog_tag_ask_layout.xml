@@ -1,72 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivPhoto"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="220dp"
-        android:layout_gravity="center_horizontal" />
+<ImageView
+    android:id="@+id/ivPhoto"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    android:layout_height="220dp"
+    android:layout_gravity="center_horizontal" />
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="wrap_content"
-        android:layout_height="220dp"
-        android:ems="15"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:background="@drawable/blog_text"
-        android:textSize="30dp"
-        android:hint="@string/hintText"
-        android:typeface="serif"
-        android:paddingTop="40dp"
-        android:textColor="#003300"
-        android:layout_below="@+id/ivPhoto"
-        android:layout_alignParentStart="true">
-    </EditText>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="bottom"
-        android:layout_below="@+id/editText1">
+<EditText
+    android:id="@+id/editText1"
+    android:layout_width="wrap_content"
+    android:layout_height="220dp"
+    android:ems="15"
+    android:gravity="start|top"
+    android:inputType="textMultiLine"
+    android:background="@drawable/blog_text"
+    android:textSize="30dp"
+    android:hint="@string/hintText"
+    android:typeface="serif"
+    android:paddingTop="40dp"
+    android:textColor="#003300"
+    android:layout_below="@+id/ivPhoto"
+    android:layout_alignParentStart="true">
+</EditText>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:gravity="bottom"
+    android:layout_below="@+id/editText1">
 
-        <ImageButton
-        android:id="@+id/imageButton1"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="left"
-        android:src="@mipmap/cam_icon"
+
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@mipmap/ic_attach"
+        android:background="@drawable/post_button"
+        android:layout_weight="1"
+        android:text="@string/pick_image_intent_text"
         />
 
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="left"
-            android:src="@mipmap/ic_attach"
-            android:text="@string/pick_image_intent_text"
-            />
 
-        <CheckBox
-            android:id="@+id/isQCheck"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="@string/is_question"
-            android:layout_gravity="center_horizontal"
-            android:checked="false"
-            android:layout_marginLeft="50dp"
-            android:textSize="10dp"/>
+    <Button
+        android:id="@+id/Button2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/post_button"
+        android:text="@string/post" />
 
-        <Button
-            android:id="@+id/Button2"
-            android:layout_width="75dp"
-            android:layout_height="48dp"
-            android:layout_gravity="right"
-            android:background="#47d147"
-            android:text="@string/post" />
-
-    </LinearLayout>
+</LinearLayout>
 </RelativeLayout>

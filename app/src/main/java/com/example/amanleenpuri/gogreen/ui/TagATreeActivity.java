@@ -83,8 +83,8 @@ public class TagATreeActivity extends AppCompatActivity {
 
                     //canvas.drawText("Hello", xPos, yPos, paint);
                     canvas.drawText(tagVal1, xPos, yPos, paint);
-                    canvas.drawText(tagVal2, xPos, yPos+20, paint);
-                    canvas.drawText(tagVal3, xPos, yPos+40, paint);
+                    canvas.drawText(tagVal2, xPos, yPos+10, paint);
+                    canvas.drawText(tagVal3, xPos, yPos+20, paint);
                     //Bitmap bmp =drawTextToBitmap(TagATreeActivity.this,R.id.iv_tree,allTag);
                     //Bitmap bmp = null;
                     Intent intent = new Intent(TagATreeActivity.this, BlogTagAskActivity.class);

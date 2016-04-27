@@ -32,6 +32,15 @@
     <string name="eventTimeLabel">At :</string>
     <string name="LocLabel">Where :</string>
     <string name="takeMeToLabel">Take me to Event</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="roleType">Role</string>
+    <string name="interestType">Interest Area</string>
+    <string name="cityName">City</string>
+    <string name="stateName">State</string>
+    <string name="register">Register</string>
+    <string name="fetch">Fetch</string>
+
 
 
 

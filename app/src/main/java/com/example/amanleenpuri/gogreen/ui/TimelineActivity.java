@@ -9,9 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.NotificationCompat;
@@ -27,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,11 +40,11 @@ import com.example.amanleenpuri.gogreen.R;
 import java.util.ArrayList;
 
 import model.GreenEntry;
+import util.UtilNotify;
 
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private int count = 0;
+    private int mNotificationsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,8 @@ public class TimelineActivity extends AppCompatActivity
         setContentView(R.layout.activity_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        new FetchCountTask().execute();
 
         ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
         greenEntryArrayList = populateList();
@@ -110,12 +115,15 @@ public class TimelineActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.timeline, menu);
 
+        MenuItem item = menu.findItem(R.id.action_notifications);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        // Update LayerDrawable's BadgeDrawable
+        UtilNotify.setBadgeCount(this, icon, mNotificationsCount);
+
+
         return true;
-
-
-
     }
-
 
 
     @Override
@@ -143,6 +151,30 @@ public class TimelineActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
+        invalidateOptionsMenu();
+    }
+
+    class FetchCountTask extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            // example count. This is where you'd
+            // query your data store for the actual count.
+            return 5;
+        }
+
+        @Override
+        public void onPostExecute(Integer count) {
+            updateNotificationsBadge(count);
+        }
+    }
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -150,7 +182,8 @@ public class TimelineActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.edit_profile) {
-            //Go to Edit Profile Page
+            Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_following) {
             Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
             startActivity(i);

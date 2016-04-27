@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import model.Event;
 
 /**
- * Created by Kumaril on 4/5/2016.
+ * Created by Tejal Shah on 4/5/2016.
  */
 public class NotificationActivity extends AppCompatActivity {
 

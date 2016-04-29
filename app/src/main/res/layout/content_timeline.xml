@@ -12,11 +12,18 @@
     android:orientation="vertical"
     tools:context="com.example.amanleenpuri.gogreen.ui.TimelineActivity">
 
-    <ListView
+    <!--ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lv_timeline"
         android:focusable="true">
-    </ListView>
+    </ListView-->
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list"
+        android:divider="@null" />
+    <!--android:id="@+id/list"-->
 
 </LinearLayout>

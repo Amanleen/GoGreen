@@ -168,10 +168,11 @@
             android:id="@+id/bn_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="registerUser"
             android:text="@string/register"
             android:layout_gravity="center"
+            android:onClick="registerUser"
             android:layout_weight="1"/>
+
     </TableRow>
 
 </TableLayout>

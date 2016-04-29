@@ -1,14 +1,30 @@
 package com.example.amanleenpuri.gogreen.ui;
 
+/**
+ * Created by amrata on 4/27/16.
+ */
+
+import model.FeedItem;
+import util.UtilNotify;
+import util.VolleyAppController;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.example.amanleenpuri.gogreen.R;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -16,50 +32,97 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.NotificationCompat;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.amanleenpuri.gogreen.R;
+import com.android.volley.Cache;
+import com.android.volley.Cache.Entry;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import java.util.ArrayList;
-
-import model.GreenEntry;
-import util.UtilNotify;
-
-public class TimelineActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainTimelineActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private static final String TAG = MainTimelineActivity.class.getSimpleName();
+    private ListView listView;
+    private FeedListAdapter listAdapter;
+    private List<FeedItem> feedItems;
+    private String URL_FEED = "http://api.androidhive.info/feed/feed.json";
     private int mNotificationsCount = 0;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+
+        listView = (ListView) findViewById(R.id.list);
+
+        feedItems = new ArrayList<FeedItem>();
+
+        listAdapter = new FeedListAdapter(this, feedItems);
+        listView.setAdapter(listAdapter);
+
+        // These two lines not needed,
+        // just to get the look of facebook (changing background color & hiding the icon)
+        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
+        //getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+
+        // We first check for cached request
+        Cache cache = VolleyAppController.getInstance().getRequestQueue().getCache();
+        Entry entry = cache.get(URL_FEED);
+        if (entry != null) {
+            // fetch the data from cache
+            try {
+                String data = new String(entry.data, "UTF-8");
+                try {
+                    parseJsonFeed(new JSONObject(data));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            // making fresh volley request and getting json
+            JsonObjectRequest jsonReq = new JsonObjectRequest(Method.GET,
+                    URL_FEED, null, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+                    if (response != null) {
+                        parseJsonFeed(response);
+                    }
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+
+            // Adding request to volley request queue
+            VolleyAppController.getInstance().addToRequestQueue(jsonReq);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         new FetchCountTask().execute();
-
-        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
-        greenEntryArrayList = populateList();
-        System.out.println("********* green list=" + greenEntryArrayList.size() + "" + greenEntryArrayList.toString());
-        ListView timelinelv = (ListView) findViewById(R.id.list);
-        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), greenEntryArrayList));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,31 +144,43 @@ public class TimelineActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
-    private ArrayList<GreenEntry> populateList() {
-        int countOfEnteries = 5;
-        String[] names = {"Tejal", "Amrata", "Aman", "Shah", "Kasture", "Puri", "Bob"};
-        String[] dateTime = {"1d ago", "2d ago", "3d ago", "5d ago", "7d ago"};
-        ArrayList<GreenEntry> gl = new ArrayList<GreenEntry>();
-        for (int i = 0; i < countOfEnteries; i++) {
-            GreenEntry ge = new GreenEntry();
-            ge.setUserName(names[i]);
-            ge.setDateTime(dateTime[i]);
-            ge.setNumberOfStars(i);
-            gl.add(ge);
-            System.out.println("******** i=" + i);
-        }
-        return gl;
-    }
+    /**
+     * Parsing json reponse and passing the data to feed view list adapter
+     * */
+    private void parseJsonFeed(JSONObject response) {
+        try {
+            JSONArray feedArray = response.getJSONArray("feed");
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            for (int i = 0; i < feedArray.length(); i++) {
+                JSONObject feedObj = (JSONObject) feedArray.get(i);
+
+                FeedItem item = new FeedItem();
+                item.setId(feedObj.getInt("id"));
+                item.setName(feedObj.getString("name"));
+
+                // Image might be null sometimes
+                String image = feedObj.isNull("image") ? null : feedObj
+                        .getString("image");
+                item.setImge(image);
+                item.setStatus(feedObj.getString("status"));
+                item.setProfilePic(feedObj.getString("profilePic"));
+                item.setTimeStamp(feedObj.getString("timeStamp"));
+
+                // url might be null sometimes
+                String feedUrl = feedObj.isNull("url") ? null : feedObj
+                        .getString("url");
+                item.setUrl(feedUrl);
+
+                feedItems.add(item);
+            }
+
+            // notify data changes to list adapater
+            listAdapter.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -124,7 +199,6 @@ public class TimelineActivity extends AppCompatActivity
 
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -204,8 +278,8 @@ public class TimelineActivity extends AppCompatActivity
             r.play();
 
             // intent triggered, you can add other intent for other actions
-            Intent intent = new Intent(TimelineActivity.this, NotificationActivity.class);
-            PendingIntent pIntent = PendingIntent.getActivity(TimelineActivity.this, 0, intent, 0);
+            Intent intent = new Intent(MainTimelineActivity.this, NotificationActivity.class);
+            PendingIntent pIntent = PendingIntent.getActivity(MainTimelineActivity.this, 0, intent, 0);
 
             // this is it, we'll build the notification!
             // in the addAction method, if you don't want any icon, just set the first param to 0
@@ -239,5 +313,4 @@ public class TimelineActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

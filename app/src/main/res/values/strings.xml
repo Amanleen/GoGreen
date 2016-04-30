@@ -40,6 +40,8 @@
     <string name="stateName">State</string>
     <string name="register">Register</string>
     <string name="fetch">Fetch</string>
+    <string name="userName">Username</string>
+    <string name="userPassword">Password</string>
 
 
 

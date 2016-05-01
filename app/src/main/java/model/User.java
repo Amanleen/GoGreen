@@ -12,6 +12,35 @@ public class User {
     private int followersNum; // Should be array of users or user id
     private int followingNum; // Should be array of users or user id
     private String imageURL;
+    private String role;
+    private String interest;
+    private String password;
+
+    public String getInterest() {
+        return interest;
+    }
+
+    public void setInterest(String interest) {
+        this.interest = interest;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 
     public int getUserId() {
         return userId;

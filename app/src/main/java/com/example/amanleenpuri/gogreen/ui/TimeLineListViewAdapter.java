@@ -43,9 +43,9 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
         ImageView followIcon = (ImageView) convertView.findViewById(R.id.become_follower_icon);
         ImageView sharePostIcon = (ImageView) convertView.findViewById(R.id.share_post_icon);
 
-        userNameOnTimeLinetv.setText(ge.getUserName());
-        timeAgoOnTimeLinetv.setText(ge.getDateTime());
-        numberOfStarstv.setText(String.valueOf(ge.getNumberOfStars()));
+        userNameOnTimeLinetv.setText(ge.getPostByUserName());
+        timeAgoOnTimeLinetv.setText(ge.getDatePosted());
+        numberOfStarstv.setText(String.valueOf(ge.getNumOfStars()));
 
         followIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
         });
 
         userProfilePicOnTimeLineiv.setImageResource(0);
-        Picasso.with(getContext()).load(ge.getImageUrl()).placeholder(R.color.colorPrimary).into(userProfilePicOnTimeLineiv);
+        Picasso.with(getContext()).load(ge.getPostImageURL()).placeholder(R.color.colorPrimary).into(userProfilePicOnTimeLineiv);
 
         articleImageiv.setImageResource(R.mipmap.ic_plant_pic);
 

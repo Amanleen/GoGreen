@@ -18,6 +18,10 @@ android {
     }
     productFlavors {
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+        jumboMode true
+    }
 }
 
 dependencies {
@@ -32,4 +36,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
 }

@@ -4,6 +4,7 @@ package com.example.amanleenpuri.gogreen.ui;
  * Created by amrata on 4/27/16.
  */
 
+import adapter.ProxyUser;
 import model.FeedItem;
 import util.UtilNotify;
 import util.VolleyAppController;
@@ -39,10 +40,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Cache.Entry;
@@ -64,86 +67,96 @@ public class MainTimelineActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+        //ENSURE USER's DETAILS ARE CACHED
+        ProxyUser pUser = ProxyUser.getInstance();
+        String userName = pUser.getUsername(getApplicationContext());
+        if(userName.isEmpty()){
+            Intent i = new Intent(MainTimelineActivity.this, LoginActivity.class);
+            startActivity(i);
+        }else {
+            setContentView(R.layout.activity_timeline);
+            Toast toast = Toast.makeText(getApplicationContext(), "USER_NAME = " + userName, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
 
+            listView = (ListView) findViewById(R.id.list);
 
-        listView = (ListView) findViewById(R.id.list);
+            feedItems = new ArrayList<FeedItem>();
 
-        feedItems = new ArrayList<FeedItem>();
+            listAdapter = new FeedListAdapter(this, feedItems);
+            listView.setAdapter(listAdapter);
 
-        listAdapter = new FeedListAdapter(this, feedItems);
-        listView.setAdapter(listAdapter);
+            // These two lines not needed,
+            // just to get the look of facebook (changing background color & hiding the icon)
+            //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
+            //getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
-        // These two lines not needed,
-        // just to get the look of facebook (changing background color & hiding the icon)
-        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
-        //getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-
-        // We first check for cached request
-        Cache cache = VolleyAppController.getInstance().getRequestQueue().getCache();
-        Entry entry = cache.get(URL_FEED);
-        if (entry != null) {
-            // fetch the data from cache
-            try {
-                String data = new String(entry.data, "UTF-8");
+            // We first check for cached request
+            Cache cache = VolleyAppController.getInstance().getRequestQueue().getCache();
+            Entry entry = cache.get(URL_FEED);
+            if (entry != null) {
+                // fetch the data from cache
                 try {
-                    parseJsonFeed(new JSONObject(data));
-                } catch (JSONException e) {
+                    String data = new String(entry.data, "UTF-8");
+                    try {
+                        parseJsonFeed(new JSONObject(data));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+
+            } else {
+                // making fresh volley request and getting json
+                JsonObjectRequest jsonReq = new JsonObjectRequest(Method.GET,
+                        URL_FEED, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        VolleyLog.d(TAG, "Response: " + response.toString());
+                        if (response != null) {
+                            parseJsonFeed(response);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    }
+                });
+
+                // Adding request to volley request queue
+                VolleyAppController.getInstance().addToRequestQueue(jsonReq);
             }
 
-        } else {
-            // making fresh volley request and getting json
-            JsonObjectRequest jsonReq = new JsonObjectRequest(Method.GET,
-                    URL_FEED, null, new Response.Listener<JSONObject>() {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-                @Override
-                public void onResponse(JSONObject response) {
-                    VolleyLog.d(TAG, "Response: " + response.toString());
-                    if (response != null) {
-                        parseJsonFeed(response);
-                    }
-                }
-            }, new Response.ErrorListener() {
+            new FetchCountTask().execute();
 
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                public void onClick(View view) {
+                    //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    //      .setAction("Action", null).show();
+                    Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
+                    startActivity(i);
+
                 }
             });
 
-            // Adding request to volley request queue
-            VolleyAppController.getInstance().addToRequestQueue(jsonReq);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
         }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        new FetchCountTask().execute();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //      .setAction("Action", null).show();
-                Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
-                startActivity(i);
-
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
     }
 

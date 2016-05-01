@@ -113,7 +113,7 @@ public class QuestionForumActivity extends AppCompatActivity{
             Button viewAnsB=(Button) convertView.findViewById(R.id.viewAnsButton);
             final LinearLayout ll=(LinearLayout)convertView.findViewById(R.id.ans_layout);
 
-            question.setText("Q. "+ ge.text);
+            question.setText("Q. "+ ge.getPostMessage());
             //viewAnsB.setText("Answers " +ansData.size());
             viewAnsB.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,7 +176,7 @@ public class QuestionForumActivity extends AppCompatActivity{
             for(int i =0; i<ansData.size();i++) {
                 //GreenEntry ge = getItem(position);
                 GreenEntry ge = ansData.get(i);
-                temp.append("Ans. " + ge.text +"\n");
+                temp.append("Ans. " + ge.getPostMessage() +"\n");
                 position=position++;
             }
 

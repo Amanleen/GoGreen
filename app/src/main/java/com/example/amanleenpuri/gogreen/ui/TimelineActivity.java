@@ -90,9 +90,9 @@ public class TimelineActivity extends AppCompatActivity
         ArrayList<GreenEntry> gl = new ArrayList<GreenEntry>();
         for (int i = 0; i < countOfEnteries; i++) {
             GreenEntry ge = new GreenEntry();
-            ge.setUserName(names[i]);
-            ge.setDateTime(dateTime[i]);
-            ge.setNumberOfStars(i);
+            ge.setPostByUserName(names[i]);
+            ge.setDatePosted(dateTime[i]);
+            ge.setNumOfStars(i);
             gl.add(ge);
             System.out.println("******** i=" + i);
         }

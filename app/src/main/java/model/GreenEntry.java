@@ -5,58 +5,81 @@ package model;
  */
 public class GreenEntry {
 
-    public String userName;
-    public int userId;
-    public String text;
-    public String type;
-    public String dateTime;
-    public int numberOfStars;
+    private int postId;
+    private int postedByUserId; // or user object
+    private String postType;
+    private String postMessage;
+    private String datePosted;
+    private String postImageURL;
+    private int numOfShares;
+    private int numOfStars;
+    private String postByUserName;
 
+
+    public GreenEntry(String postType_, int postId_, String postMessage_){
+        this.setPostType(postType_);
+        this.setPostId(postId_);
+        this.setPostMessage(postMessage_);
+    }
     public GreenEntry(){
+
     }
 
-
-    public GreenEntry(String type, int userId, String text){
-        this.type = type;
-        this.userId = userId;
-        this.text = text;
+    public String getPostByUserName() {
+        return postByUserName;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public void setPostByUserName(String postByUserName) {
+        this.postByUserName = postByUserName;
     }
 
-    public void setImageUrl(String imageUrl) {
-
-        this.imageUrl = imageUrl;
+    public int getPostId() {
+        return postId;
     }
-
-    String imageUrl;
-
-    public int getNumberOfStars() {
-        return numberOfStars;
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
-
-    public void setNumberOfStars(int numberOfStars) {
-        this.numberOfStars = numberOfStars;
+    public int getPostedByUserId() {
+        return postedByUserId;
     }
-
-    public String getUserName() {
-        return userName;
+    public void setPostedByUserId(int postedByUserId) {
+        this.postedByUserId = postedByUserId;
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getPostType() {
+        return postType;
     }
-
-    public String getDateTime() {
-        return dateTime;
+    public void setPostType(String postType) {
+        this.postType = postType;
     }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public String getPostMessage() {
+        return postMessage;
     }
-
-
+    public void setPostMessage(String postMessage) {
+        this.postMessage = postMessage;
+    }
+    public String getDatePosted() {
+        return datePosted;
+    }
+    public void setDatePosted(String datePosted) {
+        this.datePosted = datePosted;
+    }
+    public String getPostImageURL() {
+        return postImageURL;
+    }
+    public void setPostImageURL(String postImageURL) {
+        this.postImageURL = postImageURL;
+    }
+    public int getNumOfShares() {
+        return numOfShares;
+    }
+    public void setNumOfShares(int numOfShares) {
+        this.numOfShares = numOfShares;
+    }
+    public int getNumOfStars() {
+        return numOfStars;
+    }
+    public void setNumOfStars(int numOfStars) {
+        this.numOfStars = numOfStars;
+    }
 
 }

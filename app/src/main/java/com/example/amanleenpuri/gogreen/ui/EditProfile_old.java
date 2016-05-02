@@ -191,8 +191,6 @@ public class EditProfile_old extends AppCompatActivity implements View.OnClickLi
 
             }
         }).start();
-
-
     }
     private void invokeWS(JSONObject jsonObject) throws UnsupportedEncodingException {
         StringEntity entity = new StringEntity(jsonObject.toString());

@@ -6,20 +6,31 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.amanleenpuri.gogreen.R;
 
-import java.io.ByteArrayOutputStream;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import adapter.ProxyUser;
 import util.ImagePicker;
 
 /**
@@ -27,9 +38,15 @@ import util.ImagePicker;
  */
 public class BlogTagAskActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView iv;
+    private  Button b2;
+    private ImageButton b3;
+    private EditText blogMsgET;
+    private String blogPost;
+
     private AlertDialog levelDialog;
     private CheckBox chkIsQ;
-    Boolean Question = false;
+    private String blogType;
+    private int userId;
     static int TAKE_PICTURE = 1;
     private static final int PICK_IMAGE_ID = 234;
     Bitmap _bm;
@@ -39,6 +56,14 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blog_tag_ask_layout);
         iv = (ImageView) findViewById(R.id.ivPhoto);
+        Button b2=(Button)findViewById(R.id.Button2);
+        ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
+        final EditText blogMsgET = (EditText) findViewById(R.id.editTextBlog);
+
+        ProxyUser pUser = ProxyUser.getInstance();
+        userId = pUser.getUserId(getApplicationContext());
+
+
 
         if(getIntent().hasExtra("imgArray")) {
             //ivTree= new ImageView(this);
@@ -47,29 +72,8 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
             iv.setImageBitmap(_bm);
         }
 
-        Button b2=(Button)findViewById(R.id.Button2);
-        ImageButton b3=(ImageButton) findViewById(R.id.imageButton2);
-
-        /*ImageButton b1=(ImageButton)findViewById(R.id.imageButton1);
-        if(iv == null) {
-            iv = (ImageView) findViewById(R.id.ivPhoto);
-        }
-
-       b1.setOnClickListener(this);
-
-       if (b1 != null) {
-            b1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, TAKE_PICTURE);
-                }
-            });
-
-        }*/
 
         b3.setOnClickListener(this);
-
         if (b3 != null) {
             b3.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,63 +82,37 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
                     startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
                 }
             });
-
         }
 
-
-        /*chkIsQ = (CheckBox) findViewById(R.id.isQCheck);
-
-        chkIsQ.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //is chkIos checked?
-                if (((CheckBox) v).isChecked()) {
-                    Question = true;
-                    Toast.makeText(BlogTagAskActivity.this,
-                            "Question will be posted to Forum", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
-
         if (b2 != null) {
+
+
             b2.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
+                    blogPost = blogMsgET.getText().toString();
 
                     final CharSequence[] items = {" This is a Question "," This is a Blog "};
 
                     // Creating and Building the Dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(BlogTagAskActivity.this);
+
                     builder.setTitle("Please confirm");
-                   /* builder.setPositiveButton("Post as A Question", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //BlogTagAskActivity.this.finish();
-                            Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
-                            startActivity(myintent3);
-                        }
-                    })
-                            .setNegativeButton("Post as A Blog", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //dialog.cancel();
-                                    Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
-                                    startActivity(myintent2);
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();*/
+
                     builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+
+                        Intent myintent2 = new Intent(BlogTagAskActivity.this, MainTimelineActivity.class);
                         public void onClick(DialogInterface dialog, int item) {
                             switch(item)
                             {
                                 case 0:
-                                    Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
-                                    startActivity(myintent3);
+                                    blogType = "Question";
+                                    makeGreenEntry();
+                                    startActivity(myintent2);
                                     break;
                                 case 1:
-                                    Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
+                                    blogType = "Blog";
+                                    makeGreenEntry();
                                     startActivity(myintent2);
                                     break;
                             }
@@ -144,32 +122,60 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
                     levelDialog = builder.create();
                     levelDialog.show();
 
-                    /*if(!Question) {
-                        Intent myintent2 = new Intent(BlogTagAskActivity.this, TimelineActivity.class);
-                        startActivity(myintent2);
-                    }else {
-                        Intent myintent3 = new Intent(BlogTagAskActivity.this, QuestionForumActivity.class);
-                        startActivity(myintent3);
-                    }*/
-
+                    Toast.makeText(BlogTagAskActivity.this,
+                            "Your GreenEntry is being published on the Timeline", Toast.LENGTH_SHORT).show();
                 }
             });
         }
-
-
     }
 
-    /*protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==PICK_IMAGE_ID) {
-            Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-            iv.setImageBitmap(bitmap);
-        }else {
-            super.onActivityResult(requestCode, resultCode, data);
-            Bitmap bp = (Bitmap) data.getExtras().get("data");
-            iv.setImageBitmap(bp);
-        }
-    }*/
+    private void makeGreenEntry() {
+        Log.v("INSIDE MAKEGREENENTRY","JUST ENTERED");
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+
+                    Log.v("INSIDE MAKEGREENENTRY",blogPost);
+                    Log.v("INSIDE MAKEGREENENTRY",blogType);
+                    Drawable blogPic = iv.getDrawable();
+
+                    JSONObject jsonObject = new JSONObject();
+
+                    URL url = new URL("http://192.168.0.6:8080/GoGreenServer/GreenEntryServlet");
+                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+                    // Put Http parameter labels with value of Name Edit View control
+                    jsonObject.put("postedByUserId", userId);
+                    jsonObject.put("postType", blogType);
+                    jsonObject.put("postMessage", blogPost);
+                    jsonObject.put("postImageURL", blogPic);
+
+
+                    Log.d("JSONinputString", jsonObject.toString());
+
+                    connection.setDoOutput(true);
+                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+                    out.write(jsonObject.toString());
+                    out.close();
+
+                    int responseCode = connection.getResponseCode();
+                    Log.d("Response Code = ",String.valueOf(responseCode));
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String returnString="";
+                    while ((returnString = in.readLine()) != null)
+                    {
+                        Log.d("ReturnString", returnString);
+                    }
+                    in.close();
+                }catch(Exception e)
+                {
+                    Log.d("Exception",e.toString());
+                }
+
+            }
+        }).start();
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

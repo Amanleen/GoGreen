@@ -22,7 +22,8 @@
     <string name="is_question">Ask a Quetion</string>
     <string name="post">Post</string>
     <string name="pick_event_date">Event Date</string>
-    <string name="pick_event_time">Event Time</string>
+    <string name="pick_event_start_time">Event Starts</string>
+    <string name="pick_event_end_time">Event Ends</string>
     <string name="search_hint">Search Amr...</string>
     <string name="pick_image_intent_text">Choose From</string>
     <string name="answerLabel">Answers</string>

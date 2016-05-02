@@ -15,20 +15,20 @@ import com.android.volley.toolbox.Volley;
 
 import volley.LruBitmapCache;
 
-public class VolleyAppController extends Application {
+public class VolleyAppController {
 
     public static final String TAG = VolleyAppController.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     LruBitmapCache mLruBitmapCache;
+    private Application mApplication;
 
     private static VolleyAppController mInstance;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mInstance = this;
+    public static void onApplicationCreate(Application application) {
+        mInstance = new VolleyAppController();
+        mInstance.mApplication = application;
     }
 
     public static synchronized VolleyAppController getInstance() {
@@ -37,7 +37,7 @@ public class VolleyAppController extends Application {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+            mRequestQueue = Volley.newRequestQueue(mApplication);
         }
 
         return mRequestQueue;

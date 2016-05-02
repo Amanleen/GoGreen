@@ -1,11 +1,14 @@
 package com.example.amanleenpuri.gogreen.ui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,8 +21,24 @@ import com.example.amanleenpuri.gogreen.R;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import adapter.ProxyUser;
 import model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ws.remote.GoGreenREST;
+import ws.remote.GreenRESTInterface;
 
 /**
  * Created by amanleenpuri on 4/29/16.
@@ -89,32 +108,38 @@ public class SignUpActivity extends AppCompatActivity {
                     toast.show();
                 }else{
 
-                    User user = new User();
+                    final User user = new User();
                     user.setFirstName(firstNameEt.getText().toString());
                     user.setLastName(lastNameEt.getText().toString());
                     user.setUsername(userNameEt.getText().toString());
                     user.setPassword(passWordEt.getText().toString());
                     user.setCity(cityEt.getText().toString());
                     user.setState(stateEt.getText().toString());
-                    user.setRole(roleSelection);
-                    user.setInterest(interestAreaSelection);
+                    user.setRoleType(roleSelection);
+                    user.setInterestArea(interestAreaSelection);
 
-                    String jsonString = "";
-                    ObjectMapper mapper = new ObjectMapper();
-                    try {
-                        jsonString = mapper.writeValueAsString(user);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
+                    GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+                    Call<User> createUserCall = greenRESTInterface.createUser(user);
+                    createUserCall.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.isSuccessful()) {
+                                User responseUser = response.body();
+                                int userId = responseUser.getUserId();
+                                ProxyUser pUser = ProxyUser.getInstance();
+                                pUser.addUser(user.getUsername(), userId, getApplicationContext());
+                                Intent i = new Intent(SignUpActivity.this, TimelineActivity.class);
+                                startActivity(i);
+                            } else {
+                                Log.e("Signup", "Error in response " + response.errorBody());
+                            }
+                        }
 
-                    //TODO: CALL SERVLET TO SEND THE USER's JSON OBJECT
-                    //GET THE USERNAME AND USER ID
-                    int userId = 1; //TEMP
-
-                    //SAVE THAT TO LOCAL DB
-
-                    ProxyUser pUser = ProxyUser.getInstance();
-                    pUser.addUser(user.getUsername(),userId, getApplicationContext());
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Log.e("Signup", "Failure to create user", t);
+                        }
+                    });
 
                 }
             }

@@ -49,7 +49,8 @@ public class LoginActivity extends AppCompatActivity {
                     ProxyUser pUser = ProxyUser.getInstance();
                     pUser.addUser(userName,userId, getApplicationContext());
 
-                    Intent i = new Intent(LoginActivity.this, MainTimelineActivity.class);
+//                    Intent i = new Intent(LoginActivity.this, MainTimelineActivity.class);
+                    Intent i = new Intent(LoginActivity.this, TimelineActivity.class);
                     startActivity(i);
                 }
             }

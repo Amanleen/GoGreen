@@ -12,6 +12,8 @@
     <string name="state_hint">Enter your state</string>
     <string name="sign_up">Sign up</string>
     <string name="title_activity_timeline">TimelineActivity</string>
+    <string name="upload_image_label">Upload Image</string>
+    <string name="camera_label">Camera</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

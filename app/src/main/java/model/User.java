@@ -3,33 +3,25 @@ package model;
 public class User {
     private int userId;
     private String username;
+    private String password;
     private String firstName;
     private String lastName;
-    private int roleId;
-    private int userInterest;
+    private String roleType;
+//    private int roleId;
+    private String interestArea;
     private String city;
     private String state;
     private int followersNum; // Should be array of users or user id
     private int followingNum; // Should be array of users or user id
     private String imageURL;
-    private String role;
-    private String interest;
-    private String password;
 
-    public String getInterest() {
-        return interest;
+
+    public String getRoleType() {
+        return roleType;
     }
 
-    public void setInterest(String interest) {
-        this.interest = interest;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleType(String roleType) {
+        this.roleType = roleType;
     }
 
     public String getPassword() {
@@ -66,17 +58,17 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    public int getRoleId() {
-        return roleId;
+//    public int getRoleId() {
+//        return roleId;
+//    }
+//    public void setRoleId(int roleId) {
+//        this.roleId = roleId;
+//    }
+    public String getInterestArea() {
+        return interestArea;
     }
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-    public int getUserInterest() {
-        return userInterest;
-    }
-    public void setUserInterest(int userInterest) {
-        this.userInterest = userInterest;
+    public void setInterestArea(String interestArea) {
+        this.interestArea = interestArea;
     }
     public String getCity() {
         return city;

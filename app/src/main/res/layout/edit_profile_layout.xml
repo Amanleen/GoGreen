@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:id="@+id/iv_profilePicEditProfile"
-            android:src="@drawable/ic_plusone_medium_off_client"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:id="@+id/iv_profilePicEditProfile"
+                android:src="@drawable/ic_plusone_medium_off_client"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_view_height"
+                android:text="@string/upload_image_label"
+                android:layout_gravity="bottom"
+                android:id="@+id/btn_uploadImage"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_view_height"
+                android:text="@string/camera_label"
+                android:layout_gravity="bottom"
+                android:id="@+id/btn_camera"/>
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -124,8 +146,8 @@
             android:text="@string/EditProfileLabel"
             android:layout_gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:background="@color/colorPrimary" />
+            android:background="@color/colorPrimaryDark" />
 
 
     </LinearLayout>
-</FrameLayout>
+</ScrollView>

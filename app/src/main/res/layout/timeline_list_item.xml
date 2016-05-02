@@ -1,61 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/feed_bg">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:layout_marginTop="@dimen/feed_item_margin"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/feed_item_padding_top_bottom"
+        android:paddingTop="@dimen/feed_item_padding_top_bottom" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/feed_item_padding_left_right"
+        android:paddingRight="@dimen/feed_item_padding_left_right">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <!--<com.makeramen.roundedimageview.RoundedImageView-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/iv_timeline_image"-->
+            <!--android:layout_height="@dimen/icon_height"-->
+            <!--android:layout_width="@dimen/icon_width"-->
+            <!--android:src="@color/colorAccent"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--app:riv_corner_radius="30dip"-->
+            <!--app:riv_border_width="2dip"-->
+            <!--app:riv_border_color="#333333"-->
+            <!--app:riv_mutate_background="true"-->
+            <!--app:riv_tile_mode="repeat"-->
+            <!--app:riv_oval="true"-->
+            <!--android:layout_marginRight="@dimen/fab_margin"/>-->
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/iv_timeline_image"
-            android:layout_height="@dimen/icon_height"
-            android:layout_width="@dimen/icon_width"
-            android:src="@color/colorAccent"
-            android:scaleType="fitCenter"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="2dip"
-            app:riv_border_color="#333333"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true"
-            android:layout_marginRight="@dimen/fab_margin"/>
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/feed_item_profile_pic"
+            android:layout_height="@dimen/feed_item_profile_pic"
+            android:scaleType="fitCenter" >
+        </com.android.volley.toolbox.NetworkImageView>
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/tv_user_name_on_timeline"
-            android:layout_gravity="center_vertical"/>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/feed_item_profile_info_padd" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Medium Text"
-            android:id="@+id/tv_time_ago_on_timeline"
-            android:layout_gravity="center_vertical" />
+            <TextView
+                android:id="@+id/tv_user_name_on_timeline"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textSize="@dimen/feed_item_profile_name"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tv_time_ago_on_timeline"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Time stamp"
+                android:textColor="@color/timestamp"
+                android:textSize="@dimen/feed_item_timestamp" />
+        </LinearLayout>
     </LinearLayout>
-    <ImageView
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+            <!--android:text="Large Text"-->
+            <!--android:id="@+id/tv_user_name_on_timeline"-->
+            <!--android:layout_gravity="center_vertical"/>-->
+        <!--<Space-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_weight="1"/>-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+            <!--android:text="Medium Text"-->
+            <!--android:id="@+id/tv_time_ago_on_timeline"-->
+            <!--android:layout_gravity="center_vertical" />-->
+
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/iv_article_on_timeline"-->
+        <!--android:src="@color/colorAccent"/>-->
+    <TextView
+        android:id="@+id/txtStatusMsg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:text="TEXT"
+        android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+        android:paddingRight="@dimen/feed_item_status_pad_left_right"
+        android:paddingTop="@dimen/feed_item_status_pad_top" />
+
+    <com.example.amanleenpuri.gogreen.ui.FeedImageView
+        android:id="@+id/iv_article_on_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorPrimaryDark"
+        android:scaleType="fitXY"
+        android:visibility="visible"
+        android:src="@drawable/ic_star_white_24dp"/>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/iv_article_on_timeline"
-        android:src="@color/colorAccent"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal"
-        android:background="@color/colorPrimary">
-        <ImageButton
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:layout_marginTop="@dimen/feed_item_margin"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="horizontal">
+        <ToggleButton
+            android:id="@+id/star_icon"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
-            android:src="@drawable/ic_star_border_white_24dp"/>
+            android:gravity="center"
+            android:textOff=""
+            android:textOn=""
+            android:drawableTop="@drawable/ic_star_border_white_24dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,18 +137,26 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"/>
-        <ImageButton
+        <ToggleButton
             android:id="@+id/become_follower_icon"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
-            android:src="@drawable/ic_person_add_white_24dp"
+            android:gravity="center"
+            android:textOff=""
+            android:textOn=""
+            android:drawableTop="@drawable/ic_person_add_white_24dp"
             android:focusable="false"/>
-        <ImageButton
+
+        <ToggleButton
             android:id="@+id/share_post_icon"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
-            android:src="@drawable/ic_share_white_24dp"
+            android:gravity="center"
+            android:textOff=""
+            android:textOn=""
+            android:drawableTop="@drawable/ic_share_white_24dp"
             android:focusable="false"/>
     </LinearLayout>
+        </LinearLayout>
 
 </LinearLayout>

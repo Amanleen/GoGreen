@@ -99,7 +99,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
             ex.printStackTrace();
         }
-
         return p1;
     }
 }

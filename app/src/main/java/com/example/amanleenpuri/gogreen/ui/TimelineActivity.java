@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -39,8 +40,14 @@ import com.example.amanleenpuri.gogreen.R;
 
 import java.util.ArrayList;
 
+import adapter.ProxyUser;
 import model.GreenEntry;
+import model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import util.UtilNotify;
+import ws.remote.GreenRESTInterface;
 
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -178,12 +185,39 @@ public class TimelineActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+        ProxyUser pUser = ProxyUser.getInstance();
+        String userName = pUser.getUsername(getApplicationContext());
+        int userId = pUser.getUserId(getApplicationContext());
+        System.out.println("@@@@@@@ userId="+userId);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.edit_profile) {
-            Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
-            startActivity(i);
+            GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+            //TODO: REMOVE HARD CODING USER ID
+            Call<User> getUserDetailsCall = greenRESTInterface.getUserDetails(userId);
+            getUserDetailsCall.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        User responseUser = response.body();
+                        Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
+                        i.putExtra("USER_DETAILS_OBJECT", responseUser);
+                        startActivity(i);
+                    } else {
+                        Log.e("Timeline", "Error in response " + response.errorBody());
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(i);
+                    }
+                }
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e("Signup", "Failure to create user", t);
+                }
+            });
+
+
         } else if (id == R.id.nav_following) {
             Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
             startActivity(i);

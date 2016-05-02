@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,19 +68,14 @@ import java.net.URLConnection;
 import javax.net.ssl.HttpsURLConnection;
 
 import adapter.ProxyUser;
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.client.methods.HttpPost;
-import cz.msebera.android.httpclient.entity.ByteArrayEntity;
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
-import cz.msebera.android.httpclient.impl.client.SystemDefaultCredentialsProvider;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
-import cz.msebera.android.httpclient.util.EntityUtils;
+
 import model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import util.ImagePicker;
 import util.ValidateText;
+import ws.remote.GreenRESTInterface;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -87,64 +84,112 @@ public class EditProfileActivity extends AppCompatActivity {
     static final int PICK_IMAGE_FOR_AVATAR = 0;
     private  String IMAGE_BIT_MAP_IN_STRING = "";
     private ImageView imageView ;
+    private  Resources res;
+    private String roleTypeSelection=null;
+    private String interestAreaSelection = null;
+
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        res = getResources();
+
+        Intent extras = getIntent();
+        User userCurrentValues = new User();
+        System.out.println("------- IN EDIT ---------=");
+        userCurrentValues =(User)extras.getSerializableExtra("USER_DETAILS_OBJECT");
+        System.out.println("--------- userCurrentValues name ="+userCurrentValues.toString());
+        roleTypeSelection=userCurrentValues.getRoleType();
+        interestAreaSelection = userCurrentValues.getInterestArea();
 
         ProxyUser pUser = ProxyUser.getInstance();
         String userName = pUser.getUsername(getApplicationContext());
-        int userId = pUser.getUserId(getApplicationContext());
+        final int userId = pUser.getUserId(getApplicationContext());
         if(userName.isEmpty() || userId==0){
             Intent i = new Intent(EditProfileActivity.this, LoginActivity.class);
             startActivity(i);
 
         }else{
 
+            final Spinner roleTypeSp;
+            final Spinner interestAreaSp;
+            final EditText firstNameEt;
+            final EditText lastNameEt;
+            final EditText cityEt;
+            final EditText stateEt;
+//            final String roleSelection;
+//            final String interestAreaSelection;
+
             setContentView(R.layout.appbar_editprofile);
 
-            //TODO: CALL SERVLET AND GET USER INFORMATION FROM USERNAME AND USERID
-
-            Resources res = getResources();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle(R.string.EditProfileLabel);
             setSupportActionBar(toolbar);
 
-            final Spinner roleTypeSp = (Spinner)findViewById(R.id.sp_roleSpinnerEditProfile);
-            String[] roleTypeArr = res.getStringArray(R.array.roleType_array);
-            ArrayAdapter<String> adapterRoleType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, roleTypeArr);
-            roleTypeSp.setAdapter(adapterRoleType);
-            //TODO: SET SELECTED ROLE TYPE ON SPINNER
-
-            Spinner interestAreaSp = (Spinner)findViewById(R.id.sp_interestAreaSpinnerEditProfile);
-            String[] interestAreaArr = res.getStringArray(R.array.interestArea_array);
-            ArrayAdapter<String> adapterInterestArea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, interestAreaArr);
-            interestAreaSp.setAdapter(adapterInterestArea);
-            //TODO: SET SELECTED INTEREST TYPE ON SPINNER
-
-            final EditText firstNameEt = (EditText)findViewById(R.id.et_firstNameEditProfile);
+            firstNameEt = (EditText)findViewById(R.id.et_firstNameEditProfile);
             firstNameEt.setTag("First Name");
-            //TODO: SET SELECTED FIRSTNAME
+            firstNameEt.setText(userCurrentValues.getFirstName());
 
-            final EditText lastNameEt = (EditText)findViewById(R.id.et_lastNameEditProfile);
+            lastNameEt = (EditText)findViewById(R.id.et_lastNameEditProfile);
             lastNameEt.setTag("Last Name");
-            //TODO: SET SELECTED LASTNAME
+            lastNameEt.setText(userCurrentValues.getLastName());
 
-            final EditText cityEt = (EditText)findViewById(R.id.et_cityEditProfile);
+            cityEt = (EditText)findViewById(R.id.et_cityEditProfile);
             cityEt.setTag("City");
-            //TODO: SET SELECTED CITY
+            cityEt.setText(userCurrentValues.getCity());
 
-            final EditText stateEt = (EditText)findViewById(R.id.et_stateEditProfile);
+            stateEt = (EditText)findViewById(R.id.et_stateEditProfile);
             stateEt.setTag("State");
-            //TODO: SET SELECTED STATE
+            stateEt.setText(userCurrentValues.getCity());
 
             imageView = (ImageView)findViewById(R.id.iv_profilePicEditProfile);
+            imageView.setImageBitmap(getStringToBitMap(userCurrentValues.getImageURL()));
             //TODO:******* FIGURE OUT WHAT IS TO BE DONE WITH PROFILE PIC
 
-            final String roleSelection = roleTypeSp.getSelectedItem().toString();
-            final String interestAreaSelection = interestAreaSp.getSelectedItem().toString();
+            roleTypeSp = (Spinner)findViewById(R.id.sp_roleSpinnerEditProfile);
+            final String[] roleTypeArr = res.getStringArray(R.array.roleType_array);
+            ArrayAdapter<String> adapterRoleType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, roleTypeArr);
+            roleTypeSp.setAdapter(adapterRoleType);
+            if (!(userCurrentValues.getRoleType()).equals(null)) {
+                int spinnerPosition = adapterRoleType.getPosition(userCurrentValues.getRoleType());
+                roleTypeSp.setSelection(spinnerPosition);
+            }
+            roleTypeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                String roleSelection1;
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                     roleSelection1 = roleTypeArr[position];
+                    updateSelection("roleType",roleSelection1);
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            interestAreaSp = (Spinner)findViewById(R.id.sp_interestAreaSpinnerEditProfile);
+            final String[] interestAreaArr = res.getStringArray(R.array.interestArea_array);
+            ArrayAdapter<String> adapterInterestArea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, interestAreaArr);
+            interestAreaSp.setAdapter(adapterInterestArea);
+            if (!(userCurrentValues.getInterestArea()).equals(null)) {
+                int spinnerPosition = adapterInterestArea.getPosition(userCurrentValues.getInterestArea());
+                interestAreaSp.setSelection(spinnerPosition);
+            }
+            interestAreaSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                String interestAreaSelection1;
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    interestAreaSelection1 = interestAreaArr[position];
+                    updateSelection("interestArea",interestAreaSelection1);
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+//            roleSelection = roleTypeSp.getSelectedItem().toString();
+//            interestAreaSelection = interestAreaSp.getSelectedItem().toString();
 
             Button cameraBtn = (Button)findViewById(R.id.btn_camera);
             cameraBtn.setOnClickListener(new Button.OnClickListener(){
@@ -153,6 +198,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     clickpic();
                 }
             });
+
             Button uploadImageBtn = (Button)findViewById(R.id.btn_uploadImage);
             uploadImageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,12 +211,16 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileBtn.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
+                    Toast toast1= Toast.makeText(getApplicationContext(), "ON CLICK", Toast.LENGTH_SHORT);
+                    toast1.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast1.show();
+
                     EditText invalidEditText = checkIfEntered(firstNameEt, lastNameEt, cityEt, stateEt);
                     if (invalidEditText != null) {
                         Toast toast= Toast.makeText(getApplicationContext(), invalidEditText.getTag() + " field cannot be empty.", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
-                    }else if(roleSelection.isEmpty()){
+                    }else if(roleTypeSelection.isEmpty()){
                         Toast toast= Toast.makeText(getApplicationContext(), " Select a role Type!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
@@ -180,29 +230,65 @@ public class EditProfileActivity extends AppCompatActivity {
                         toast.show();
                     }else{
                         User user = new User();
+                        user.setUserId(userId);
                         user.setFirstName(firstNameEt.getText().toString());
                         user.setLastName(lastNameEt.getText().toString());
                         user.setCity(cityEt.getText().toString());
                         user.setState(stateEt.getText().toString());
-                        user.setRoleType(roleSelection);
-//                        user.setInterest(interestAreaSelection);
+                        user.setRoleType(roleTypeSelection);
+                        user.setInterestArea(interestAreaSelection);
                         user.setImageURL(IMAGE_BIT_MAP_IN_STRING);
-
+                        System.out.println("************ USER="+user);
                         String jsonString = "";
                         ObjectMapper mapper = new ObjectMapper();
                         try {
                             jsonString = mapper.writeValueAsString(user);
+                            System.out.println(jsonString);
+
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
 
                         //TODO: CALL SERVLET TO SEND THE USER's JSON OBJECT
+                        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+                        Call<User> editUserCall = greenRESTInterface.editUser(user);
+                        editUserCall.enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                if (response.isSuccessful()) {
+                                    User res = response.body();
+                                    System.out.println("************RES USER="+res.toString());
+
+//                                    Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
+//                                    i.putExtra("USER_DETAILS_OBJECT", responseUser);
+//                                    startActivity(i);
+
+                                } else {
+                                    Log.e("Timeline", "Error in response " + response.errorBody());
+                                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(i);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                Log.e("Signup", "Failure to create user", t);
+                            }
+                        });
 
                         //TODO: RETURN TO PREVIOUS ACTIVITY
 
                     }
                 }
             });
+        }
+    }
+
+    private void updateSelection(String type, String value){
+        if(type.equalsIgnoreCase("roleType")){
+            roleTypeSelection = value;
+        }else if(type.equalsIgnoreCase("interestArea")){
+            interestAreaSelection = value;
         }
     }
 
@@ -251,7 +337,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {

@@ -82,11 +82,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private static final String SERVICE_URL = "http://192.168.0.6:8080/GoGreen_Server/rest/user";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE_FOR_AVATAR = 0;
-    private  String IMAGE_BIT_MAP_IN_STRING = "";
+    private String IMAGE_BIT_MAP_IN_STRING = "";
     private ImageView imageView ;
-    private  Resources res;
+    private Resources res;
     private String roleTypeSelection=null;
     private String interestAreaSelection = null;
+    private String test1 = "Outdoor";
 
 
     /** Called when the activity is first created. */
@@ -98,9 +99,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Intent extras = getIntent();
         User userCurrentValues = new User();
-        System.out.println("------- IN EDIT ---------=");
+//        System.out.println("------- IN EDIT ---------=");
         userCurrentValues =(User)extras.getSerializableExtra("USER_DETAILS_OBJECT");
-        System.out.println("--------- userCurrentValues name ="+userCurrentValues.toString());
+//        System.out.println("--------- userCurrentValues name ="+userCurrentValues.toString());
+//        System.out.println("************ USER="+ userCurrentValues.getImageURL());
         roleTypeSelection=userCurrentValues.getRoleType();
         interestAreaSelection = userCurrentValues.getInterestArea();
 
@@ -142,11 +144,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
             stateEt = (EditText)findViewById(R.id.et_stateEditProfile);
             stateEt.setTag("State");
-            stateEt.setText(userCurrentValues.getCity());
+            stateEt.setText(userCurrentValues.getState());
 
             imageView = (ImageView)findViewById(R.id.iv_profilePicEditProfile);
             imageView.setImageBitmap(getStringToBitMap(userCurrentValues.getImageURL()));
-            //TODO:******* FIGURE OUT WHAT IS TO BE DONE WITH PROFILE PIC
 
             roleTypeSp = (Spinner)findViewById(R.id.sp_roleSpinnerEditProfile);
             final String[] roleTypeArr = res.getStringArray(R.array.roleType_array);
@@ -160,7 +161,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 String roleSelection1;
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                     roleSelection1 = roleTypeArr[position];
+                    roleSelection1 = roleTypeArr[position];
                     updateSelection("roleType",roleSelection1);
                 }
                 @Override
@@ -182,6 +183,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     interestAreaSelection1 = interestAreaArr[position];
+                    System.out.print("Strings matching :: "+interestAreaSelection1.equals(test1));
                     updateSelection("interestArea",interestAreaSelection1);
                 }
                 @Override
@@ -238,7 +240,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         user.setRoleType(roleTypeSelection);
                         user.setInterestArea(interestAreaSelection);
                         user.setImageURL(IMAGE_BIT_MAP_IN_STRING);
-                        System.out.println("************ USER="+user);
+//                        System.out.println("************ USER=");
                         String jsonString = "";
                         ObjectMapper mapper = new ObjectMapper();
                         try {
@@ -249,7 +251,6 @@ public class EditProfileActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        //TODO: CALL SERVLET TO SEND THE USER's JSON OBJECT
                         GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
                         Call<User> editUserCall = greenRESTInterface.editUser(user);
                         editUserCall.enqueue(new Callback<User>() {
@@ -257,12 +258,8 @@ public class EditProfileActivity extends AppCompatActivity {
                             public void onResponse(Call<User> call, Response<User> response) {
                                 if (response.isSuccessful()) {
                                     User res = response.body();
-                                    System.out.println("************RES USER="+res.toString());
-
-//                                    Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
-//                                    i.putExtra("USER_DETAILS_OBJECT", responseUser);
-//                                    startActivity(i);
-
+                                    Intent i = new Intent(EditProfileActivity.this, TimelineActivity.class);
+                                    startActivity(i);
                                 } else {
                                     Log.e("Timeline", "Error in response " + response.errorBody());
                                     Intent i = new Intent(getApplicationContext(), LoginActivity.class);
@@ -275,9 +272,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 Log.e("Signup", "Failure to create user", t);
                             }
                         });
-
-                        //TODO: RETURN TO PREVIOUS ACTIVITY
-
                     }
                 }
             });

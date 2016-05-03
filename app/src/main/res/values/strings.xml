@@ -64,7 +64,7 @@
 
     <string-array name="interestArea_array">
         <item>Indoor</item>
-        <item>OutDoor</item>
+        <item>Outdoor</item>
     </string-array>
 
 

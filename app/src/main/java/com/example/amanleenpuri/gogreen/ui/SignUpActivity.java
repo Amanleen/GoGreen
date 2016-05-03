@@ -89,6 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 roleSelection1 = roleTypeArr[position];
+//                Toast.makeText(getApplicationContext(),"Strings matching :: "+roleSelection1.equals("Horticulturist"),Toast.LENGTH_LONG).show();
                 updateSelection("roleType",roleSelection1);
             }
             @Override
@@ -101,6 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 interestAreaSelection1 = interestAreaArr[position];
+//                Toast.makeText(getApplicationContext(),"Strings matching :: "+interestAreaSelection1+" "+interestAreaSelection1.equals("Outdoor"),Toast.LENGTH_LONG).show();
                 updateSelection("interestArea",interestAreaSelection1);
             }
             @Override

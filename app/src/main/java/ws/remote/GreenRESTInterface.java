@@ -11,7 +11,6 @@ import retrofit2.http.Query;
  * Created by Tejal Shah.
  */
 public interface GreenRESTInterface {
-
     @POST("UserServlet")
     Call<User> createUser(@Body User user);
 

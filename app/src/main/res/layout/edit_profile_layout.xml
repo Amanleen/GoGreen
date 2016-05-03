@@ -51,7 +51,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_firstNameEditProfile"
             android:hint="@string/hintEnterFirstName"/>
@@ -68,9 +69,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_lastNameEditProfile"
-            android:maxLines="1"
             android:hint="@string/hintEnterLastName"/>
 
         <TextView
@@ -117,9 +119,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_cityEditProfile"
-            android:maxLines="1"
             android:hint="@string/city_hint"/>
 
         <TextView
@@ -134,9 +137,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_stateEditProfile"
-            android:maxLines="1"
             android:hint="@string/state_hint"/>
 
         <Button

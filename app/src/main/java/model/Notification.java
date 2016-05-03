@@ -1,12 +1,22 @@
 package model;
 
 public class Notification {
+    private int notificationId;
     private GreenEntry postNote;
     private Event eventNote;
     private String notificationMessage;
     private String notificationDate;
     private int greenEntryId;
     private int eventId;
+
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
 
     public GreenEntry getPostNote() {
         return postNote;

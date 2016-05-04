@@ -1,5 +1,8 @@
 package ws.remote;
 
+import java.lang.reflect.Array;
+
+import model.GreenEntry;
 import model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,4 +22,14 @@ public interface GreenRESTInterface {
 
     @POST("EditUserServlet")
     Call<User> editUser(@Body User user);
+
+    @POST("UserAuthServlet")
+    Call<User> authenticateUser(@Body User user);
+
+    @POST("GreenEntryServlet")
+    Call<GreenEntry> createGreenEntry(@Body GreenEntry greenEntry);
+
+    @GET("TimelineServlet")
+    Call<GreenEntry[]> getTimeline(@Query("opId") int opId);
+
 }

@@ -67,7 +67,7 @@
         android:text="@string/login_button"
         android:id="@+id/btn_login"
         android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimary"/>
+        style="@style/ButtonAppearance"/>
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
@@ -93,12 +93,12 @@
             android:layout_weight="1"/>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/text_view_height"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/forgot_login"
-            android:id="@+id/tv_forgot_login" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="@dimen/text_view_height"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:text="@string/forgot_login"-->
+            <!--android:id="@+id/tv_forgot_login" />-->
 
     </LinearLayout>
 

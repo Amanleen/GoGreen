@@ -1,8 +1,8 @@
 package model;
 
-/**
- * Created by amanleenpuri on 4/3/16.
- */
+import java.sql.Blob;
+import java.sql.Date;
+
 public class GreenEntry {
 
     private int postId;
@@ -13,31 +13,100 @@ public class GreenEntry {
     private String postImageURL;
     private int numOfShares;
     private int numOfStars;
+
     private String postByUserName;
+    private String userImage;
+
+    private int questionIdForAnswers;
 
 
-    public GreenEntry(String postType_, int postId_, String postMessage_){
-        this.setPostType(postType_);
-        this.setPostId(postId_);
-        this.setPostMessage(postMessage_);
-    }
     public GreenEntry(){
 
     }
+
+    public GreenEntry(int pid){
+        this.postId=pid;
+    }
+
+    public GreenEntry(int pid, String postType){
+        this.postId=pid;
+        this.postType=postType;
+    }
+
+
+    public GreenEntry(int qid, int usr, String postTyp, String postMsg, String pic) {
+        this.questionIdForAnswers=qid;
+        this.postedByUserId=usr;
+        this.postType=postTyp;
+        this.postMessage=postMsg;
+        this.postImageURL=pic;
+    }
+
+
+    public GreenEntry(int postidInt,int userid_posted, String postByUserName, String postTypeString, String postMsg, String blob, String userImage, Date date) {
+        this.postId=postidInt;
+        this.postedByUserId = userid_posted;
+        this.postType = postTypeString;
+        this.postMessage = postMsg;
+        this.postImageURL=blob;
+        this.datePosted = date.toString();
+        this.postByUserName=postByUserName;
+        this.userImage = userImage;
+        // TODO Auto-generated constructor stub
+    }
+
+
+    public GreenEntry(int usr, String postTyp, String postMsg, String pic) {
+        this.postedByUserId=usr;
+        this.postType=postTyp;
+        this.postMessage=postMsg;
+        this.postImageURL=pic;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
 
     public String getPostByUserName() {
         return postByUserName;
     }
 
+
     public void setPostByUserName(String postByUserName) {
         this.postByUserName = postByUserName;
     }
+
+
+
+    public GreenEntry(int qid, int postidInt,int userid_posted, String postTypeString, String postMsg, String blob, Date date) {
+        this.questionIdForAnswers=qid;
+        this.postId=postidInt;
+        this.postedByUserId = userid_posted;
+        this.postType = postTypeString;
+        this.postMessage = postMsg;
+        this.postImageURL=blob.toString();
+        this.datePosted = date.toString();
+        // TODO Auto-generated constructor stub
+    }
+
 
     public int getPostId() {
         return postId;
     }
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+    public int getQuestionIdForAnswers() {
+        return questionIdForAnswers;
+    }
+    public void setQuestionIdForAnswers(int qId) {
+        this.questionIdForAnswers = qId;
     }
     public int getPostedByUserId() {
         return postedByUserId;
@@ -81,5 +150,17 @@ public class GreenEntry {
     public void setNumOfStars(int numOfStars) {
         this.numOfStars = numOfStars;
     }
+
+
+    @Override
+    public String toString() {
+        return "GreenEntry [postId=" + postId + ", postedByUserId=" + postedByUserId + ", postType=" + postType
+                + ", postMessage=" + postMessage + ", datePosted=" + datePosted + ", postImageURL=" + postImageURL
+                + ", numOfShares=" + numOfShares + ", numOfStars=" + numOfStars + ", postByUserName=" + postByUserName
+                + ", userImage=" + userImage+"]";
+    }
+
+
+
 
 }

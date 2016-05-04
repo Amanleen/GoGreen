@@ -38,6 +38,15 @@
         <item name="android:typeface">serif</item>
     </style>
 
+    <style name="ButtonAppearance">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:background">@color/colorPrimary</item>
+
+    </style>
+
+
 
 
 </resources>

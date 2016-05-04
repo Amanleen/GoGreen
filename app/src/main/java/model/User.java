@@ -2,14 +2,13 @@ package model;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
     private int userId;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String roleType;
-//    private int roleId;
     private String interestArea;
     private String city;
     private String state;
@@ -17,21 +16,43 @@ public class User implements Serializable{
     private int followingNum; // Should be array of users or user id
     private String imageURL;
 
-
-    public String getRoleType() {
-        return roleType;
+    public User() {
+        username = "";
+        firstName = "";
+        lastName = "";
+        roleType = "";
+        interestArea = "";
+        city = "";
+        state = "";
+        followersNum = 0;
+        followingNum = 0;
+        imageURL ="";
     }
 
-    public void setRoleType(String roleType) {
+    public User(int uid, String fn, String ln){
+        this.userId=uid;
+        this.firstName=fn;
+        this.lastName=ln;
+    }
+
+    public User(int uid, String fn, String ln, String rt){
+        this.userId=uid;
+        this.firstName=fn;
+        this.lastName=ln;
+        this.roleType=rt;
+    }
+
+    public User(String username, String firstName, String lastName, String roleType,String interestArea, String city, String state, String imageURL) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.roleType = roleType;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.interestArea = interestArea;
+        this.city = city;
+        this.state = state;
+        this.followersNum = 0;
+        this.followingNum = 0;
+        this.imageURL =imageURL;
     }
 
 
@@ -48,9 +69,18 @@ public class User implements Serializable{
     public void setUsername(String username) {
         this.username = username;
     }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -60,12 +90,12 @@ public class User implements Serializable{
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-//    public int getRoleId() {
-//        return roleId;
-//    }
-//    public void setRoleId(int roleId) {
-//        this.roleId = roleId;
-//    }
+    public String getRoleType() {
+        return roleType;
+    }
+    public void setRoleId(String roleType) {
+        this.roleType = roleType;
+    }
     public String getInterestArea() {
         return interestArea;
     }
@@ -101,5 +131,14 @@ public class User implements Serializable{
     }
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
+                + firstName + ", lastName=" + lastName + ", roleType=" + roleType + ", userInterest=" + interestArea
+                + ", city=" + city + ", state=" + state + ", followersNum=" + followersNum + ", followingNum="
+                + followingNum + ", imageURL=" + imageURL + "]";
     }
 }

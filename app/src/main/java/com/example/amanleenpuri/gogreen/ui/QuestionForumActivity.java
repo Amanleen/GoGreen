@@ -77,17 +77,17 @@ public class QuestionForumActivity extends AppCompatActivity{
 
 
     private void setQaList(){
-        qaData.add(new GreenEntry("Question",12345,"Diseased Sunflowers?"));
-        qaData.add(new GreenEntry("Question",23456,"White spots on flowers"));
-        qaData.add(new GreenEntry("Question",34567,"Bad Soil"));
-        qaData.add(new GreenEntry("Question",45678,"Temporary"));
+//        qaData.add(new GreenEntry("Question",12345,"Diseased Sunflowers?"));
+//        qaData.add(new GreenEntry("Question",23456,"White spots on flowers"));
+//        qaData.add(new GreenEntry("Question",34567,"Bad Soil"));
+//        qaData.add(new GreenEntry("Question",45678,"Temporary"));
     }
 
     private void setAnsList(){
-        ansData.add(new GreenEntry("Answer",12345,"Sprinkle Salt"));
-        ansData.add(new GreenEntry("Answer",23456,"user organic pesticides"));
-        ansData.add(new GreenEntry("Answer",34567,"Please provide some details"));
-        ansData.add(new GreenEntry("Answer",45678,"What is your question exactly"));
+//        ansData.add(new GreenEntry("Answer",12345,"Sprinkle Salt"));
+//        ansData.add(new GreenEntry("Answer",23456,"user organic pesticides"));
+//        ansData.add(new GreenEntry("Answer",34567,"Please provide some details"));
+//        ansData.add(new GreenEntry("Answer",45678,"What is your question exactly"));
     }
 
 

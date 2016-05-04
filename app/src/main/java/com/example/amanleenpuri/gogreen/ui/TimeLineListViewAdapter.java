@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import model.GreenEntry;
+import util.ImageHelper;
 import util.VolleyAppController;
 
 /**
@@ -41,7 +42,7 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
 
     ImageLoader imageLoader = VolleyAppController.getInstance().getImageLoader();
 
-    TimeLineListViewAdapter(Context context, ArrayList<GreenEntry> list){
+    TimeLineListViewAdapter(Context context, GreenEntry[] list){
         super(context, android.R.layout.simple_list_item_1,list);
     }
 
@@ -54,12 +55,20 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
         TextView userNameOnTimeLinetv = (TextView)convertView.findViewById(R.id.tv_user_name_on_timeline);
         TextView timeAgoOnTimeLinetv = (TextView)convertView.findViewById(R.id.tv_time_ago_on_timeline);
         final TextView numberOfStarstv = (TextView)convertView.findViewById(R.id.tv_number_of_stars_on_timeline);
-        NetworkImageView userProfilePicOnTimeLineiv = (NetworkImageView)convertView.findViewById(R.id.iv_timeline_image);
-        FeedImageView articleImageiv = (FeedImageView)convertView.findViewById(R.id.iv_article_on_timeline);
+        ImageView userProfilePicOnTimeLineiv = (ImageView)convertView.findViewById(R.id.iv_timeline_image);
+        ImageView articleImageiv = (ImageView)convertView.findViewById(R.id.iv_article_on_timeline);
         ToggleButton followIcon = (ToggleButton) convertView.findViewById(R.id.become_follower_icon);
         final ToggleButton sharePostIcon = (ToggleButton) convertView.findViewById(R.id.share_post_icon);
-//        ImageView starIcon = (ImageView) convertView.findViewById(R.id.star_icon);
         ToggleButton starIcon = (ToggleButton) convertView.findViewById(R.id.star_icon);
+        TextView postMessage = (TextView)convertView.findViewById(R.id.tv_postMsg);
+
+        postMessage.setText(ge.getPostMessage());
+        if(ge.getPostImageURL()!=null){
+            userProfilePicOnTimeLineiv.setImageBitmap(ImageHelper.getStringToBitMap(ge.getPostImageURL()));
+        }
+        articleImageiv.setImageBitmap(ImageHelper.getStringToBitMap(ge.getPostImageURL()));
+
+
 
         //TODO: ADD CONDITION TO SET START ICON STATE
 //        starIcon.setChecked(true);
@@ -103,8 +112,6 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
             }
         });
 
-
-
         sharePostIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -121,26 +128,6 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
                 }
             }
         });
-
-        userProfilePicOnTimeLineiv.setDefaultImageResId(R.drawable.common_full_open_on_phone);
-        userProfilePicOnTimeLineiv.setImageUrl(ge.getPostImageURL(), imageLoader);
-
-//        userProfilePicOnTimeLineiv.setImageResource(0);
-//        Picasso.with(getContext()).load(ge.getPostImageURL()).placeholder(R.color.colorPrimary).into(userProfilePicOnTimeLineiv);
-
-        //articleImageiv.setImageResource(R.mipmap.ic_plant_pic);
-//        String path = "android.resource://" + convertView.getContext().getPackageName() + "/download.png";
-//        Uri uri = Uri.parse(path);
-//        File file = new File(uri.toString());
-
-        InputStream coverImageIS = getContext().getResources().openRawResource(R.raw.download);
-        Bitmap bitmap = BitmapFactory.decodeStream(coverImageIS);
-
-        Drawable d = new BitmapDrawable(getContext().getResources(), bitmap);
-        articleImageiv.setImageDrawable(d);
-//        articleImageiv.setImageUrl(file.toURI().toString(), imageLoader);
-        articleImageiv.setVisibility(View.VISIBLE);
-
         return convertView;
     }
 }

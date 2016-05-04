@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -99,10 +100,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Intent extras = getIntent();
         User userCurrentValues = new User();
-//        System.out.println("------- IN EDIT ---------=");
         userCurrentValues =(User)extras.getSerializableExtra("USER_DETAILS_OBJECT");
-//        System.out.println("--------- userCurrentValues name ="+userCurrentValues.toString());
-//        System.out.println("************ USER="+ userCurrentValues.getImageURL());
         roleTypeSelection=userCurrentValues.getRoleType();
         interestAreaSelection = userCurrentValues.getInterestArea();
 
@@ -121,8 +119,6 @@ public class EditProfileActivity extends AppCompatActivity {
             final EditText lastNameEt;
             final EditText cityEt;
             final EditText stateEt;
-//            final String roleSelection;
-//            final String interestAreaSelection;
 
             setContentView(R.layout.appbar_editprofile);
 
@@ -193,7 +189,7 @@ public class EditProfileActivity extends AppCompatActivity {
 //            roleSelection = roleTypeSp.getSelectedItem().toString();
 //            interestAreaSelection = interestAreaSp.getSelectedItem().toString();
 
-            Button cameraBtn = (Button)findViewById(R.id.btn_camera);
+            ImageButton cameraBtn = (ImageButton)findViewById(R.id.btn_camera);
             cameraBtn.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -201,7 +197,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             });
 
-            Button uploadImageBtn = (Button)findViewById(R.id.btn_uploadImage);
+            ImageButton uploadImageBtn = (ImageButton)findViewById(R.id.btn_uploadImage);
             uploadImageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -213,9 +209,6 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileBtn.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Toast toast1= Toast.makeText(getApplicationContext(), "ON CLICK", Toast.LENGTH_SHORT);
-                    toast1.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-                    toast1.show();
 
                     EditText invalidEditText = checkIfEntered(firstNameEt, lastNameEt, cityEt, stateEt);
                     if (invalidEditText != null) {
@@ -237,10 +230,9 @@ public class EditProfileActivity extends AppCompatActivity {
                         user.setLastName(lastNameEt.getText().toString());
                         user.setCity(cityEt.getText().toString());
                         user.setState(stateEt.getText().toString());
-                        user.setRoleType(roleTypeSelection);
+                        user.setRoleId(roleTypeSelection);
                         user.setInterestArea(interestAreaSelection);
                         user.setImageURL(IMAGE_BIT_MAP_IN_STRING);
-//                        System.out.println("************ USER=");
                         String jsonString = "";
                         ObjectMapper mapper = new ObjectMapper();
                         try {
@@ -269,7 +261,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<User> call, Throwable t) {
-                                Log.e("Signup", "Failure to create user", t);
+                                Log.e("Edit profile", "Failure to fetch user", t);
                             }
                         });
                     }
@@ -301,7 +293,6 @@ public class EditProfileActivity extends AppCompatActivity {
         // Check Camera
         if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }

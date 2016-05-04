@@ -62,18 +62,51 @@ public class TimelineActivity extends AppCompatActivity
 
         new FetchCountTask().execute();
 
-        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
-        greenEntryArrayList = populateList();
-        System.out.println("********* green list=" + greenEntryArrayList.size() + "" + greenEntryArrayList.toString());
-        ListView timelinelv = (ListView) findViewById(R.id.list);
-        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), greenEntryArrayList));
+//        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
+//        greenEntryArrayList = populateList();
+//        System.out.println("********* green list=" + greenEntryArrayList.size() + "" + greenEntryArrayList.toString());
+
+
+
+        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+        Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
+        getTimeLineCall.enqueue(new Callback<GreenEntry[]>() {
+            @Override
+            public void onResponse(Call<GreenEntry[]> call, Response<GreenEntry[]> response) {
+                if (response.isSuccessful()) {
+                    GreenEntry[] res = response.body();
+                    ListView timelinelv = (ListView) findViewById(R.id.list);
+                    timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), res));
+
+                } else {
+                    Log.e("Timeline", "Error in response " + response.errorBody());
+                    Toast toast= Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GreenEntry[]> call, Throwable t) {
+                Log.e("Login", "Failure to authenticate user", t);
+
+                Toast toast= Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+            }
+        });
+
+
+
+
+
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //      .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
                 startActivity(i);
 
@@ -195,7 +228,6 @@ public class TimelineActivity extends AppCompatActivity
 
         if (id == R.id.edit_profile) {
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
-            //TODO: REMOVE HARD CODING USER ID
             Call<User> getUserDetailsCall = greenRESTInterface.getUserDetails(userId);
             getUserDetailsCall.enqueue(new Callback<User>() {
                 @Override
@@ -216,7 +248,6 @@ public class TimelineActivity extends AppCompatActivity
                     Log.e("Signup", "Failure to create user", t);
                 }
             });
-
 
         } else if (id == R.id.nav_following) {
             Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
@@ -245,7 +276,6 @@ public class TimelineActivity extends AppCompatActivity
             // in the addAction method, if you don't want any icon, just set the first param to 0
             NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_cast_light, "Previous", pIntent).build();
             Notification mNotification = new Notification.Builder(this)
-
                     .setContentTitle("New Post!")
                     .setContentText("There is something new for you on GoGreen!")
                     .setSmallIcon(R.drawable.ic_cast_light)
@@ -253,7 +283,6 @@ public class TimelineActivity extends AppCompatActivity
                     .setSound(soundUri)
                     //.addAction(action)
                     .build();
-
 
             mNotification.defaults |= Notification.DEFAULT_VIBRATE;
             //use the above default or set custom valuse as below

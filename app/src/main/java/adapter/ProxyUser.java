@@ -33,4 +33,13 @@ public class ProxyUser {
         return userId;
     }
 
+    public static boolean validateUser(Context context){
+        String userName = getInstance().getUsername(context);
+        int userId = getInstance().getUserId(context);
+        if(userName.isEmpty() || userId==0){
+            return false;
+        }
+        return true;
+    }
+
 }

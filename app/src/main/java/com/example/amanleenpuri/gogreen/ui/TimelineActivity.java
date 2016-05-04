@@ -55,6 +55,8 @@ import ws.remote.GreenRESTInterface;
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private int mNotificationsCount = 0;
+    private ArrayList<User> following = null;
+    private ArrayList<User> follower = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,8 +255,9 @@ public class TimelineActivity extends AppCompatActivity
             });
 
         } else if (id == R.id.nav_following) {
-            Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
-            startActivity(i);
+            following = new ArrayList<User>();
+            follower = new ArrayList<User>();
+            getFollowingData(1);
 
         } else if (id == R.id.nav_mywall) {
             Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
@@ -304,6 +307,46 @@ public class TimelineActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void getFollowingData(final int opId) {
+        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+        int currUserId = ProxyUser.getInstance().getUserId(getApplicationContext());
+        Call<ArrayList<User>> getFollowingCall = greenRESTInterface.getFollowingDetails(currUserId,opId);
+
+        getFollowingCall.enqueue(new Callback<ArrayList<User>>() {
+            ArrayList<User> temp = new ArrayList<User>();
+            @Override
+            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
+                if (response.isSuccessful()) {
+                    if(opId==1 && response.body()!=null) {
+                        temp = response.body();
+                        for(int i=0; i<temp.size();i++){
+                            following.add(temp.get(i));
+                        }
+                        getFollowingData(2);
+                    }
+                    else if(opId==2 && response.body()!=null) {
+                        temp = response.body();
+                        for(int i=0; i<temp.size();i++){
+                            follower.add(temp.get(i));
+                        }
+                        Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putSerializable("FOLLOWING",following);
+                        extras.putSerializable("FOLLOWER",follower);
+                        i.putExtras(extras);
+                        startActivity(i);
+                    }
+                } else {
+                    Log.e("GetFollowingData", "Error in response " + response.errorBody());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                Log.e("Signup", "Failure to get Following Data", t);
+            }
+        });
     }
 
 }

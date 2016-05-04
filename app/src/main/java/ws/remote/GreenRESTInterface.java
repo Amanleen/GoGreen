@@ -1,7 +1,9 @@
 package ws.remote;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
+import model.Following;
 import model.GreenEntry;
 import model.User;
 import retrofit2.Call;
@@ -31,5 +33,11 @@ public interface GreenRESTInterface {
 
     @GET("TimelineServlet")
     Call<GreenEntry[]> getTimeline(@Query("opId") int opId);
+
+    @GET("FollowingServlet")
+    Call<ArrayList<User>> getFollowingDetails(@Query("userId") int userId, @Query("opId") int opId);
+
+    @POST("FollowingServlet")
+    Call<Following> setFollowing(@Body Following f);
 
 }

@@ -60,6 +60,9 @@ public class LoginActivity extends AppCompatActivity {
                     authenticateUserCall.enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
+                            System.out.println("********* RESPONSE 1 ="+response.toString());
+                            System.out.println("********* RESPONSE 2="+response.isSuccessful());
+                            System.out.println("********* RESPONSE 3="+response.body());
                             if (response.isSuccessful()) {
                                 User res = response.body();
                                 ProxyUser pUser = ProxyUser.getInstance();

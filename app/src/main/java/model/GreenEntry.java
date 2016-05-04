@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Date;
 
-public class GreenEntry {
+public class GreenEntry implements Serializable {
 
     private int postId;
     private int postedByUserId; // or user object

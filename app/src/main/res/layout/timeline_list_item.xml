@@ -53,12 +53,21 @@
 
     </LinearLayout>
 
-    <TextView
+    <!--<TextView-->
+        <!--android:id="@+id/tv_postMsg"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingBottom="5dp"-->
+        <!--android:text="TEXT"-->
+        <!--android:paddingLeft="@dimen/feed_item_status_pad_left_right"-->
+        <!--android:paddingRight="@dimen/feed_item_status_pad_left_right"-->
+        <!--android:paddingTop="@dimen/feed_item_status_pad_top" />-->
+
+    <com.example.amanleenpuri.gogreen.ui.ExpandableTextView
         android:id="@+id/tv_postMsg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
-        android:text="TEXT"
         android:paddingLeft="@dimen/feed_item_status_pad_left_right"
         android:paddingRight="@dimen/feed_item_status_pad_left_right"
         android:paddingTop="@dimen/feed_item_status_pad_top" />

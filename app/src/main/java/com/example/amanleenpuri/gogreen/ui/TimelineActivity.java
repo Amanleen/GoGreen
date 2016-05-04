@@ -39,6 +39,9 @@ import android.widget.Toast;
 import com.example.amanleenpuri.gogreen.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import adapter.ProxyUser;
 import model.GreenEntry;
@@ -56,71 +59,71 @@ public class TimelineActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ProxyUser pUser = ProxyUser.getInstance();
+        String userName = pUser.getUsername(getApplicationContext());
+        final int userId = pUser.getUserId(getApplicationContext());
+        if (userName.isEmpty() || userId == 0) {
+            Intent i = new Intent(TimelineActivity.this, LoginActivity.class);
+            startActivity(i);
 
-        new FetchCountTask().execute();
+        } else {
+            setContentView(R.layout.activity_timeline);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            new FetchCountTask().execute();
+            GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+            Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
+            getTimeLineCall.enqueue(new Callback<GreenEntry[]>() {
+                @Override
+                public void onResponse(Call<GreenEntry[]> call, Response<GreenEntry[]> response) {
+                    if (response.isSuccessful()) {
+                        GreenEntry[] res = response.body();
+                        GreenEntry[] reversedArray = reverseArray(res);
+                        ListView timelinelv = (ListView) findViewById(R.id.list);
+                        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), reversedArray, userId));
 
-//        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
-//        greenEntryArrayList = populateList();
-//        System.out.println("********* green list=" + greenEntryArrayList.size() + "" + greenEntryArrayList.toString());
+                    } else {
+                        Log.e("Timeline", "Error in response " + response.errorBody());
+                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                        toast.show();
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<GreenEntry[]> call, Throwable t) {
+                    Log.e("Login", "Failure to authenticate user", t);
 
-
-        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
-        Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
-        getTimeLineCall.enqueue(new Callback<GreenEntry[]>() {
-            @Override
-            public void onResponse(Call<GreenEntry[]> call, Response<GreenEntry[]> response) {
-                if (response.isSuccessful()) {
-                    GreenEntry[] res = response.body();
-                    ListView timelinelv = (ListView) findViewById(R.id.list);
-                    timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), res));
-
-                } else {
-                    Log.e("Timeline", "Error in response " + response.errorBody());
-                    Toast toast= Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     toast.show();
                 }
-            }
+            });
 
-            @Override
-            public void onFailure(Call<GreenEntry[]> call, Throwable t) {
-                Log.e("Login", "Failure to authenticate user", t);
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
+                    startActivity(i);
 
-                Toast toast= Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-            }
-        });
+                }
+            });
 
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
 
-
-
-
-
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
-                startActivity(i);
-
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+        }
+    }
+    private GreenEntry[] reverseArray(GreenEntry[] input) {
+            List<GreenEntry> list = Arrays.asList(input);
+            Collections.reverse(list);
+            return (GreenEntry[]) list.toArray();
     }
 
     private ArrayList<GreenEntry> populateList() {

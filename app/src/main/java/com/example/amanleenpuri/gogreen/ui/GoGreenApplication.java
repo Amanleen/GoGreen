@@ -1,6 +1,8 @@
 package com.example.amanleenpuri.gogreen.ui;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -12,9 +14,15 @@ import ws.remote.GreenRESTInterface;
  */
 public class GoGreenApplication extends Application {
     public static final String BASE_URL = "http://10.1.10.15:8080/GoGreenServer/";
-
     private Retrofit mRetrofitService;
     private GreenRESTInterface mGoGreenApiService;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
 
     @Override
     public void onCreate() {
@@ -27,6 +35,7 @@ public class GoGreenApplication extends Application {
         mGoGreenApiService = mRetrofitService.create(GreenRESTInterface.class);
         VolleyAppController.onApplicationCreate(this);
     }
+
 
     public GreenRESTInterface getGoGreenApiService() {
         return mGoGreenApiService;

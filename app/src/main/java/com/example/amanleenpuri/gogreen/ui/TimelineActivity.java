@@ -64,6 +64,8 @@ public class TimelineActivity extends AppCompatActivity
         ProxyUser pUser = ProxyUser.getInstance();
         String userName = pUser.getUsername(getApplicationContext());
         final int userId = pUser.getUserId(getApplicationContext());
+        System.out.println("*********** userId="+userId);
+        System.out.println("*********** userName=" + userName);
         if (userName.isEmpty() || userId == 0) {
             Intent i = new Intent(TimelineActivity.this, LoginActivity.class);
             startActivity(i);
@@ -128,21 +130,6 @@ public class TimelineActivity extends AppCompatActivity
             return (GreenEntry[]) list.toArray();
     }
 
-    private ArrayList<GreenEntry> populateList() {
-        int countOfEnteries = 5;
-        String[] names = {"Tejal", "Amrata", "Aman", "Shah", "Kasture", "Puri", "Bob"};
-        String[] dateTime = {"1d ago", "2d ago", "3d ago", "5d ago", "7d ago"};
-        ArrayList<GreenEntry> gl = new ArrayList<GreenEntry>();
-        for (int i = 0; i < countOfEnteries; i++) {
-            GreenEntry ge = new GreenEntry();
-            ge.setPostByUserName(names[i]);
-            ge.setDatePosted(dateTime[i]);
-            ge.setNumOfStars(i);
-            gl.add(ge);
-            System.out.println("******** i=" + i);
-        }
-        return gl;
-    }
 
     @Override
     public void onBackPressed() {
@@ -228,10 +215,15 @@ public class TimelineActivity extends AppCompatActivity
         String userName = pUser.getUsername(getApplicationContext());
         int userId = pUser.getUserId(getApplicationContext());
         System.out.println("@@@@@@@ userId="+userId);
+        System.out.println("*********** userName="+userName);
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
+        System.out.println("*********** id="+id);
 
         if (id == R.id.edit_profile) {
+            System.out.println("*********** IN CLICK ************");
+
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
             Call<User> getUserDetailsCall = greenRESTInterface.getUserDetails(userId);
             getUserDetailsCall.enqueue(new Callback<User>() {
@@ -239,6 +231,7 @@ public class TimelineActivity extends AppCompatActivity
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful()) {
                         User responseUser = response.body();
+//                        responseUser.setImageURL(null);
                         Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
                         i.putExtra("USER_DETAILS_OBJECT", responseUser);
                         startActivity(i);

@@ -107,6 +107,8 @@ public class EditProfileActivity extends AppCompatActivity {
         ProxyUser pUser = ProxyUser.getInstance();
         String userName = pUser.getUsername(getApplicationContext());
         final int userId = pUser.getUserId(getApplicationContext());
+        System.out.println("*********** userId="+userId);
+        System.out.println("*********** userName="+userName);
         if(userName.isEmpty() || userId==0){
             Intent i = new Intent(EditProfileActivity.this, LoginActivity.class);
             startActivity(i);
@@ -143,7 +145,8 @@ public class EditProfileActivity extends AppCompatActivity {
             stateEt.setText(userCurrentValues.getState());
 
             imageView = (ImageView)findViewById(R.id.iv_profilePicEditProfile);
-            imageView.setImageBitmap(getStringToBitMap(userCurrentValues.getImageURL()));
+            IMAGE_BIT_MAP_IN_STRING = userCurrentValues.getImageURL();
+            imageView.setImageBitmap(getStringToBitMap(IMAGE_BIT_MAP_IN_STRING));
 
             roleTypeSp = (Spinner)findViewById(R.id.sp_roleSpinnerEditProfile);
             final String[] roleTypeArr = res.getStringArray(R.array.roleType_array);

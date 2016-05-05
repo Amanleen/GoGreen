@@ -218,11 +218,20 @@ public class TimelineActivity extends AppCompatActivity
     private void doMySearch(String query) {
         System.out.println("************ in do my search ****************");
         ArrayList<GreenEntry> searchArrayList = new ArrayList<GreenEntry>();
-        for(int i=0; i<greenEntryListArray.size();i++){
-            String postMessage = greenEntryListArray.get(i).getPostMessage();
-            if(postMessage.contains(query)){
-                searchArrayList.add(greenEntryListArray.get(i));
-                System.out.println("MATCHED :: "+postMessage);
+        if(query.equalsIgnoreCase("done")){
+            restoreTimeline();
+            Toast toast= Toast.makeText(getApplicationContext(),
+                    " done is end search", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
+
+        }else {
+            for (int i = 0; i < greenEntryListArray.size(); i++) {
+                String postMessage = greenEntryListArray.get(i).getPostMessage();
+                if (postMessage.contains(query)) {
+                    searchArrayList.add(greenEntryListArray.get(i));
+                    System.out.println("MATCHED :: " + postMessage);
+                }
             }
         }
         System.out.println("************ searchArrayList.size()="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
@@ -233,6 +242,7 @@ public class TimelineActivity extends AppCompatActivity
             timelineLVAdapter.notifyDataSetChanged();
         }else if(searchArrayList.size()==0) {
             restoreTimeline();
+
 //            System.out.println("************ 2 =" + searchArrayList.size() + " ******** greenEntryListArray=" + greenEntryListArray.size());
 //            timelineLVAdapter.clear();
 //            greenEntryListArray = bufferGreenEntryListArray;

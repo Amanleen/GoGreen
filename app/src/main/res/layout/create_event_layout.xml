@@ -67,16 +67,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/eventTimeNo"
-            style="@style/EventLabelTextView"
-            android:layout_weight="1"
-            android:textColor="@color/colorPrimaryDark" />
+            style="@style/EventValueTextView"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/iv_eventDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pick_event_date"
-            android:onClick="showDatePickerDialog"
             android:src="@drawable/ic_action_date"/>
     </LinearLayout>
 
@@ -97,16 +95,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/eventTimeNo"
-            android:layout_weight="1"
-            style="@style/EventLabelTextView"
-            android:textColor="@color/colorPrimaryDark" />
+            style="@style/EventValueTextView"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/iv_eventStartTime"
             android:layout_width="@dimen/icon_width"
             android:layout_height="@dimen/icon_height"
             android:text="@string/pick_event_start_time"
-            android:onClick="showStartTimePickerDialog"
             android:src="@drawable/ic_action_time"/>
     </LinearLayout>
 
@@ -127,16 +123,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/eventTimeNo"
-            style="@style/EventLabelTextView"
-            android:layout_weight="1"
-            android:textColor="@color/colorPrimaryDark" />
+            style="@style/EventValueTextView"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/iv_eventEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pick_event_end_time"
-            android:onClick="showEndTimePickerDialog"
             android:src="@drawable/ic_action_time_end" />
     </LinearLayout>
 
@@ -190,9 +184,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/publishEventLabel"
-        android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="@color/colorPrimaryDark"/>
+        style="@style/ButtonAppearance"/>
 
 </LinearLayout>
 </ScrollView>

@@ -3,6 +3,7 @@ package ws.remote;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import model.Event;
 import model.Following;
 import model.GreenEntry;
 import model.User;
@@ -39,5 +40,9 @@ public interface GreenRESTInterface {
 
     @POST("FollowingServlet")
     Call<Following> setFollowing(@Body Following f);
+
+    @POST("EventServlet")
+    Call<Event> createEvent(@Body Event event);
+
 
 }

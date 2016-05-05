@@ -3,6 +3,8 @@ package com.example.amanleenpuri.gogreen.ui;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +18,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,6 +50,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import java.util.List;
+import java.util.Vector;
 
 import adapter.ProxyUser;
 import model.GreenEntry;
@@ -65,6 +70,12 @@ public class TimelineActivity extends AppCompatActivity
     ArrayList<GreenEntry> qaData;
     private ArrayList<User> following = null;
     private ArrayList<User> follower = null;
+    private GreenEntry[] greenEntryArr;
+    private ArrayList<GreenEntry> greenEntryListArray;
+    private ArrayList<GreenEntry> bufferGreenEntryListArray;
+    private ListView timelinelv;
+    private int userId=0;
+    private TimeLineListViewAdapter timelineLVAdapter;
 
 
     @Override
@@ -72,9 +83,12 @@ public class TimelineActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         ProxyUser pUser = ProxyUser.getInstance();
         String userName = pUser.getUsername(getApplicationContext());
-        final int userId = pUser.getUserId(getApplicationContext());
+        userId = pUser.getUserId(getApplicationContext());
         System.out.println("*********** userId="+userId);
         System.out.println("*********** userName=" + userName);
+        greenEntryListArray = new ArrayList<GreenEntry>();
+        bufferGreenEntryListArray = new ArrayList<GreenEntry>();
+
         if (userName.isEmpty() || userId == 0) {
             Intent i = new Intent(TimelineActivity.this, LoginActivity.class);
             startActivity(i);
@@ -84,27 +98,32 @@ public class TimelineActivity extends AppCompatActivity
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             new FetchCountTask().execute();
+            ListView timelinelv = (ListView) findViewById(R.id.list);
+            greenEntryListArray = new ArrayList<GreenEntry>();
+            timelineLVAdapter = new TimeLineListViewAdapter(getBaseContext(),greenEntryListArray, userId);
+            timelinelv.setAdapter(timelineLVAdapter);
+
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
-            Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
-            getTimeLineCall.enqueue(new Callback<GreenEntry[]>() {
+            Call<ArrayList<GreenEntry>> getTimeLineCall = greenRESTInterface.getTimeline(1);
+            getTimeLineCall.enqueue(new Callback<ArrayList<GreenEntry>>() {
                 @Override
-                public void onResponse(Call<GreenEntry[]> call, Response<GreenEntry[]> response) {
+                public void onResponse(Call<ArrayList<GreenEntry>> call, Response<ArrayList<GreenEntry>> response) {
                     if (response.isSuccessful()) {
-                        GreenEntry[] res = response.body();
-                        GreenEntry[] reversedArray = reverseArray(res);
-                        ListView timelinelv = (ListView) findViewById(R.id.list);
-                        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), reversedArray, userId));
+                        ArrayList<GreenEntry> res = response.body();
+                        Collections.reverse(res);
+                        bufferGreenEntryListArray = res;
+                        timelineLVAdapter.addAll(res);
 
                     } else {
                         Log.e("Timeline", "Error in response " + response.errorBody());
-                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Could't fetch data!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                         toast.show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<GreenEntry[]> call, Throwable t) {
+                public void onFailure(Call<ArrayList<GreenEntry>> call, Throwable t) {
                     Log.e("Login", "Failure to authenticate user", t);
 
                     Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
@@ -133,11 +152,6 @@ public class TimelineActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
         }
     }
-    private GreenEntry[] reverseArray(GreenEntry[] input) {
-            List<GreenEntry> list = Arrays.asList(input);
-            Collections.reverse(list);
-            return (GreenEntry[]) list.toArray();
-    }
 
 
     @Override
@@ -162,8 +176,79 @@ public class TimelineActivity extends AppCompatActivity
         // Update LayerDrawable's BadgeDrawable
         UtilNotify.setBadgeCount(this, icon, mNotificationsCount);
 
-
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        MenuItemCompat.setOnActionExpandListener(searchItem,  new MenuItemCompat.OnActionExpandListener() {
+//            @Override
+//            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+//                // Return true to allow the action view to expand
+//                return false;
+//            }
+//            @Override
+//            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+//                // When the action view is collapsed, reset the query
+//               restoreTimeline();
+//                // Return true to allow the action view to collapse
+//                return true;
+//            }
+//        });
+        //SearchView searchView = (SearchView) searchItem.getActionView();
+        //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+//        System.out.println("MATCHED :: handleIntent");
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            restoreTimeline();
+//            System.out.println("MATCHED :: search");
+            doMySearch(query);
+        }
+    }
+
+    private void doMySearch(String query) {
+        System.out.println("************ in do my search ****************");
+        ArrayList<GreenEntry> searchArrayList = new ArrayList<GreenEntry>();
+        for(int i=0; i<greenEntryListArray.size();i++){
+            String postMessage = greenEntryListArray.get(i).getPostMessage();
+            if(postMessage.contains(query)){
+                searchArrayList.add(greenEntryListArray.get(i));
+                System.out.println("MATCHED :: "+postMessage);
+            }
+        }
+        System.out.println("************ searchArrayList.size()="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
+        if(searchArrayList.size()>0){
+            System.out.println("************ 1="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
+            timelineLVAdapter.clear();
+            timelineLVAdapter.addAll(searchArrayList);
+            timelineLVAdapter.notifyDataSetChanged();
+        }else if(searchArrayList.size()==0) {
+            restoreTimeline();
+//            System.out.println("************ 2 =" + searchArrayList.size() + " ******** greenEntryListArray=" + greenEntryListArray.size());
+//            timelineLVAdapter.clear();
+//            greenEntryListArray = bufferGreenEntryListArray;
+//            timelineLVAdapter.addAll(greenEntryListArray);
+//            timelineLVAdapter.notifyDataSetChanged();
+//            System.out.println("************ 2 1 =" + searchArrayList.size() + " ******** greenEntryListArray=" + greenEntryListArray.size());
+        }
+
+    }
+
+    public void restoreTimeline(){
+        timelineLVAdapter.clear();
+        greenEntryListArray = bufferGreenEntryListArray;
+        timelineLVAdapter.addAll(greenEntryListArray);
+        timelineLVAdapter.notifyDataSetChanged();
+        System.out.println("******************** greenEntryListArray=" + greenEntryListArray.size());
     }
 
 
@@ -174,13 +259,10 @@ public class TimelineActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return false;
-        }
         if (id == R.id.action_search) {
-            Intent intent = new Intent(this, SearchResultsActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this, SearchResultsActivity.class);
+//            startActivity(intent);
+            onSearchRequested();
             return true;
         }
         if (id == R.id.action_notifications) {
@@ -218,6 +300,9 @@ public class TimelineActivity extends AppCompatActivity
             });
 
             return true;
+            Intent intent = new Intent(this, NotificationActivity.class);
+            startActivity(intent);
+//            return true;
         }
         return super.onOptionsItemSelected(item);
     }

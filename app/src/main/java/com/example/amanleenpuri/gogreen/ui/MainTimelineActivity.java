@@ -221,9 +221,9 @@ public class MainTimelineActivity extends AppCompatActivity implements Navigatio
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
         if (id == R.id.action_search) {
             Intent intent = new Intent(this, SearchResultsActivity.class);
             startActivity(intent);

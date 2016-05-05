@@ -15,13 +15,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.example.amanleenpuri.gogreen.R;
 
-
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-
 import model.GreenEntry;
 import util.ImageHelper;
 import util.TimeAgoHelper;
@@ -34,7 +30,7 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
     private int userId=0;
     Context context;
 
-    TimeLineListViewAdapter(Context context, GreenEntry[] list, int userId){
+    TimeLineListViewAdapter(Context context, ArrayList<GreenEntry> list, int userId){
         super(context, android.R.layout.simple_list_item_1,list);
         this.context = context;
         this.userId = userId;
@@ -132,9 +128,4 @@ public class TimeLineListViewAdapter extends ArrayAdapter<GreenEntry> {
         return convertView;
     }
 
-//    private void callBlogIntent(GreenEntry ge) {
-//        Intent i = new Intent(context, BlogActivity.class);
-//        i.putExtra("GREEN_ENTRY", ge);
-//        context.startActivity(i);
-//    }
 }

@@ -20,6 +20,10 @@ public class Event implements Parcelable {
     private int eventHostedById;
     private int interestAreaId;
 
+    public Event(){
+
+    }
+
     public Event(String eTitle,String eDetail,String eLoc, String eOn,String eStart, String eEnd, int eBy){
         eventTitle = eTitle;
         eventDescription = eDetail;

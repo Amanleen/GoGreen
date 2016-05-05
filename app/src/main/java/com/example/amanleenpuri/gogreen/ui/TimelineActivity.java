@@ -39,6 +39,8 @@ import android.widget.Toast;
 import com.example.amanleenpuri.gogreen.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import adapter.ProxyUser;
 import model.GreenEntry;
@@ -51,7 +53,10 @@ import ws.remote.GreenRESTInterface;
 
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private int mNotificationsCount = 0;
+
+    private  int mNotificationsCount = 0;
+    ArrayList<model.Notification> noteData;
+    ArrayList<GreenEntry> qaData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,15 +155,46 @@ public class TimelineActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_notifications) {
-            Intent intent = new Intent(this, NotificationActivity.class);
-            startActivity(intent);
+            updateNotificationsBadge(0);
+            noteData=new ArrayList<model.Notification>();
+            GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+            Call<List<model.Notification>> getNs = greenRESTInterface.getAllNotifications();
+            getNs.enqueue(new Callback<List<model.Notification>>() {
+
+                List<model.Notification> arrN=new ArrayList<model.Notification>();
+                @Override
+                public void onResponse(Call<List<model.Notification>> call, Response<List<model.Notification>> response) {
+                    if (response.isSuccessful()) {
+
+                        arrN = response.body();
+                        for(int i=0;i<arrN.size();i++){
+
+                            noteData.add(arrN.get(i));
+
+                        }
+                        Intent intent = new Intent(TimelineActivity.this, NotificationActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putSerializable("NOTIFS",noteData);
+                        intent.putExtras(extras);
+                        startActivity(intent);
+                    } else {
+                        Log.e("Signup", "Error in response " + response.errorBody());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<model.Notification>> call, Throwable t) {
+                    Log.e("NOTIFICATIONS", "Failure to fetch Notifications", t);
+                }
+            });
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateNotificationsBadge(int count) {
+    public void updateNotificationsBadge(int count) {
         mNotificationsCount = count;
 
         // force the ActionBar to relayout its MenuItems.
@@ -168,11 +204,12 @@ public class TimelineActivity extends AppCompatActivity
 
     class FetchCountTask extends AsyncTask<Void, Void, Integer> {
 
+
         @Override
         protected Integer doInBackground(Void... params) {
-            // example count. This is where you'd
-            // query your data store for the actual count.
-            return 5;
+
+            int i = CreateEventActivity.count;
+            return i;
         }
 
         @Override
@@ -230,6 +267,42 @@ public class TimelineActivity extends AppCompatActivity
             Intent i = new Intent(getApplicationContext(), CreateEventActivity.class);
             startActivity(i);
 
+        } else if (id == R.id.qa_forum) {
+            qaData = new ArrayList<GreenEntry>();
+
+            GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+            Call<List<GreenEntry>> getAllQuestions = greenRESTInterface.getQuestions(2);
+            getAllQuestions.enqueue(new Callback<List<GreenEntry>>() {
+
+                List<GreenEntry> arrGE=new ArrayList<GreenEntry>();
+                @Override
+                public void onResponse(Call<List<GreenEntry>> call, Response<List<GreenEntry>> response) {
+                    if (response.isSuccessful()) {
+
+                        arrGE = response.body();
+                        for(int i=0;i<arrGE.size();i++){
+                            qaData.add(arrGE.get(i));
+
+                        }
+
+                       
+                        Intent i = new Intent(getApplicationContext(), QuestionForumActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putSerializable("Q_DATA",qaData);
+                        //extras.putSerializable("QA_HASH",qaHash);
+                        i.putExtras(extras);
+                        startActivity(i);
+                    } else {
+                        Log.e("Signup", "Error in response " + response.errorBody());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<GreenEntry>> call, Throwable t) {
+                    Log.e("QA_Forum", "Failure to fetch Questions", t);
+                }
+            });
+
         } else if (id == R.id.activate_notification) {
             // define sound URI, the sound to be played when there's a notification
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -247,7 +320,7 @@ public class TimelineActivity extends AppCompatActivity
             Notification mNotification = new Notification.Builder(this)
 
                     .setContentTitle("New Post!")
-                    .setContentText("There is something new for you on GoGreen!")
+                    .setContentText("There is an event for you on GoGreen!")
                     .setSmallIcon(R.drawable.ic_cast_light)
                     .setContentIntent(pIntent)
                     .setSound(soundUri)
@@ -273,5 +346,7 @@ public class TimelineActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
 }

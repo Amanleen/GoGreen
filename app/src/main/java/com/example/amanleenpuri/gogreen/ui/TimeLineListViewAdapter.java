@@ -25,7 +25,7 @@ import android.widget.ToggleButton;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.amanleenpuri.gogreen.R;
-import com.squareup.picasso.Picasso;
+
 
 import java.io.File;
 import java.io.InputStream;

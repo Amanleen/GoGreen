@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 
 import com.example.amanleenpuri.gogreen.R;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.ArrayList;
 

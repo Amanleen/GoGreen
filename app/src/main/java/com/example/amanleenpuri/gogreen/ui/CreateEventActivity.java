@@ -3,16 +3,23 @@ package com.example.amanleenpuri.gogreen.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +65,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     public static FragmentManager fragmentManager;
     private static TextView datetv;
     private int userId;
+    public static int count = 0;
     private String userName;
 
     private static TextView startTimetv;
@@ -174,7 +182,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
                     Toast.makeText(CreateEventActivity.this,
                             "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
-                    Intent myintent2 = new Intent(CreateEventActivity.this, MainTimelineActivity.class);
+                    Intent myintent2 = new Intent(CreateEventActivity.this, TimelineActivity.class);
                     startActivity(myintent2);
                 }
             });
@@ -192,6 +200,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void insertNotification(int eId) {
+
         final int eventId = eId;
         Log.v("*********","INSIDE INSERT FUNCTION");
         new Thread(new Runnable() {
@@ -240,6 +249,41 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     }
                     in.close();
 
+                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), soundUri);
+                    r.play();
+
+                    // intent triggered, you can add other intent for other actions
+                    Intent intent = new Intent(getApplicationContext(), TimelineActivity.class);
+                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                    // this is it, we'll build the notification!
+                    // in the addAction method, if you don't want any icon, just set the first param to 0
+                    NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_cast_light, "Previous", pIntent).build();
+                    Notification mNotification = new Notification.Builder(getApplicationContext())
+
+                            .setContentTitle("New Post!")
+                            .setContentText("There is an event for you on GoGreen!")
+                            .setSmallIcon(R.drawable.ic_cast_light)
+                            .setContentIntent(pIntent)
+                            .setSound(soundUri)
+                            //.addAction(action)
+                            .build();
+
+
+                    mNotification.defaults |= Notification.DEFAULT_VIBRATE;
+                    //use the above default or set custom valuse as below
+                    long[] vibrate = {0, 200, 100, 200};
+                    mNotification.vibrate = vibrate;
+
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                    // If you want to hide the notification after it was selected, do the code below
+                    // myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(0, mNotification);
+                    count++;
+                    new TimelineActivity().updateNotificationsBadge(count);
 
                    /* final String responseObj = returnString;
                     runOnUiThread(new Runnable() {

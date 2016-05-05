@@ -1,5 +1,10 @@
 package ws.remote;
 
+import java.util.List;
+
+import model.Event;
+import model.GreenEntry;
+import model.Notification;
 import model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -11,6 +16,7 @@ import retrofit2.http.Query;
  * Created by Tejal Shah.
  */
 public interface GreenRESTInterface {
+
     @POST("UserServlet")
     Call<User> createUser(@Body User user);
 
@@ -19,4 +25,21 @@ public interface GreenRESTInterface {
 
     @POST("EditUserServlet")
     Call<User> editUser(@Body User user);
+
+    @GET("TimelineServlet")
+    Call<List<GreenEntry>> getQuestions(@Query("opId") int opId);
+
+    @GET("AllNotificationsServlet")
+    Call<List<Notification>> getAllNotifications();
+
+    @GET("EventServlet")
+    Call<Event> getAnEvent(@Query("eventId") int eventId);
+
+    @GET("AnswerServlet")
+    Call<List<GreenEntry>> getAnsForQ(@Query("qId") int qId);
+
+    @POST("GreenEntryServlet")
+    Call<GreenEntry> makeGEntry(@Body GreenEntry GreenEntry);
+
+
 }

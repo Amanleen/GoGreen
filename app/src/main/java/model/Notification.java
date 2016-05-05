@@ -1,6 +1,9 @@
 package model;
 
-public class Notification {
+import java.io.Serializable;
+import java.sql.Date;
+
+public class Notification implements Serializable{
     private int notificationId;
     private GreenEntry postNote;
     private Event eventNote;
@@ -8,7 +11,40 @@ public class Notification {
     private String notificationDate;
     private int greenEntryId;
     private int eventId;
+    private String byUserName;
+    private String userPic;
 
+    public Notification(){
+
+    }
+
+    public Notification(int notificationId, int greenEntryId, int eventId, String notificationMessage, Date notificationDate, String byUserName, String userPic) {
+        this.notificationId = notificationId;
+        this.greenEntryId = greenEntryId;
+        this.eventId = eventId;
+        this.notificationMessage = notificationMessage;
+        this.notificationDate = notificationDate.toString();
+        this.byUserName=byUserName;
+        this.userPic = userPic;
+
+    }
+
+    public String getByUserName() {
+        return byUserName;
+    }
+
+    public void setByUserName(String byUserName) {
+        this.byUserName = byUserName;
+    }
+
+
+    public String getUserPic() {
+        return userPic;
+    }
+
+    public void setUserPic(String userPic) {
+        this.userPic = userPic;
+    }
 
     public int getNotificationId() {
         return notificationId;
@@ -61,5 +97,18 @@ public class Notification {
         this.notificationDate = notificationDate;
     }
 
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "notificationId=" + notificationId +
+                ", postNote=" + postNote +
+                ", eventNote=" + eventNote +
+                ", notificationMessage='" + notificationMessage + '\'' +
+                ", notificationDate='" + notificationDate + '\'' +
+                ", greenEntryId=" + greenEntryId +
+                ", eventId=" + eventId +
+                ", byUserName='" + byUserName + '\'' +
+                ", userPic='" + userPic + '\'' +
+                '}';
+    }
 }
-

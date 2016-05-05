@@ -51,10 +51,19 @@
     <string name="fetch">Fetch</string>
     <string name="userName">Username</string>
     <string name="userPassword">Password</string>
+    <string name="eventDate">Event date</string>
+    <string name="eventStartTime">Event Starts from</string>
+    <string name="eventEndTime">Event Ends at</string>
+    <string name="eventTimeNo">00:00</string>
+    <string name="eventNameFormLabel">Event Name</string>
+    <string name="eventDescriptionFormLabel">Event Description</string>
 
     <string name="EditProfileLabel">Edit Profile</string>
     <string name="hintEnterFirstName">Enter First Name</string>
     <string name="hintEnterLastName">Enter Last Name</string>
+    <string name="hintEnterEventName">Enter your event name</string>
+    <string name="hintEnterEventDescription">Enter your event description</string>
+    <string name="publishEventLabel">Publish Event</string>
 
     <string-array name="roleType_array">
         <item>Plant Lover</item>

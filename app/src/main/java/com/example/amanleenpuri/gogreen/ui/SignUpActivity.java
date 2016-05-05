@@ -142,7 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setPassword(passWordEt.getText().toString());
                     user.setCity(cityEt.getText().toString());
                     user.setState(stateEt.getText().toString());
-                    user.setRoleType(roleTypeSelection);
+                    user.setRoleId(roleTypeSelection);
                     user.setInterestArea(interestAreaSelection);
 
                     GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();

@@ -39,7 +39,12 @@ import android.widget.Toast;
 import com.example.amanleenpuri.gogreen.R;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import java.util.List;
 
 import adapter.ProxyUser;
@@ -54,62 +59,86 @@ import ws.remote.GreenRESTInterface;
 public class TimelineActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
     private  int mNotificationsCount = 0;
     ArrayList<model.Notification> noteData;
     ArrayList<GreenEntry> qaData;
+    private ArrayList<User> following = null;
+    private ArrayList<User> follower = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ProxyUser pUser = ProxyUser.getInstance();
+        String userName = pUser.getUsername(getApplicationContext());
+        final int userId = pUser.getUserId(getApplicationContext());
+        System.out.println("*********** userId="+userId);
+        System.out.println("*********** userName=" + userName);
+        if (userName.isEmpty() || userId == 0) {
+            Intent i = new Intent(TimelineActivity.this, LoginActivity.class);
+            startActivity(i);
 
-        new FetchCountTask().execute();
+        } else {
+            setContentView(R.layout.activity_timeline);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            new FetchCountTask().execute();
+            GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+            Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
+            getTimeLineCall.enqueue(new Callback<GreenEntry[]>() {
+                @Override
+                public void onResponse(Call<GreenEntry[]> call, Response<GreenEntry[]> response) {
+                    if (response.isSuccessful()) {
+                        GreenEntry[] res = response.body();
+                        GreenEntry[] reversedArray = reverseArray(res);
+                        ListView timelinelv = (ListView) findViewById(R.id.list);
+                        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), reversedArray, userId));
 
-        ArrayList<GreenEntry> greenEntryArrayList = new ArrayList<>(5);
-        greenEntryArrayList = populateList();
-        System.out.println("********* green list=" + greenEntryArrayList.size() + "" + greenEntryArrayList.toString());
-        ListView timelinelv = (ListView) findViewById(R.id.list);
-        timelinelv.setAdapter(new TimeLineListViewAdapter(getBaseContext(), greenEntryArrayList));
+                    } else {
+                        Log.e("Timeline", "Error in response " + response.errorBody());
+                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                        toast.show();
+                    }
+                }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //      .setAction("Action", null).show();
-                Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
-                startActivity(i);
+                @Override
+                public void onFailure(Call<GreenEntry[]> call, Throwable t) {
+                    Log.e("Login", "Failure to authenticate user", t);
 
-            }
-        });
+                    Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+            });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(), BlogTagAskActivity.class);
+                    startActivity(i);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
+                }
+            });
 
-    private ArrayList<GreenEntry> populateList() {
-        int countOfEnteries = 5;
-        String[] names = {"Tejal", "Amrata", "Aman", "Shah", "Kasture", "Puri", "Bob"};
-        String[] dateTime = {"1d ago", "2d ago", "3d ago", "5d ago", "7d ago"};
-        ArrayList<GreenEntry> gl = new ArrayList<GreenEntry>();
-        for (int i = 0; i < countOfEnteries; i++) {
-            GreenEntry ge = new GreenEntry();
-            ge.setPostByUserName(names[i]);
-            ge.setDatePosted(dateTime[i]);
-            ge.setNumOfStars(i);
-            gl.add(ge);
-            System.out.println("******** i=" + i);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
         }
-        return gl;
     }
+    private GreenEntry[] reverseArray(GreenEntry[] input) {
+            List<GreenEntry> list = Arrays.asList(input);
+            Collections.reverse(list);
+            return (GreenEntry[]) list.toArray();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -147,7 +176,7 @@ public class TimelineActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            return false;
         }
         if (id == R.id.action_search) {
             Intent intent = new Intent(this, SearchResultsActivity.class);
@@ -190,7 +219,6 @@ public class TimelineActivity extends AppCompatActivity
 
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -227,18 +255,23 @@ public class TimelineActivity extends AppCompatActivity
         String userName = pUser.getUsername(getApplicationContext());
         int userId = pUser.getUserId(getApplicationContext());
         System.out.println("@@@@@@@ userId="+userId);
+        System.out.println("*********** userName="+userName);
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
+        System.out.println("*********** id="+id);
 
         if (id == R.id.edit_profile) {
+            System.out.println("*********** IN CLICK ************");
+
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
-            //TODO: REMOVE HARD CODING USER ID
             Call<User> getUserDetailsCall = greenRESTInterface.getUserDetails(userId);
             getUserDetailsCall.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful()) {
                         User responseUser = response.body();
+//                        responseUser.setImageURL(null);
                         Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
                         i.putExtra("USER_DETAILS_OBJECT", responseUser);
                         startActivity(i);
@@ -254,10 +287,10 @@ public class TimelineActivity extends AppCompatActivity
                 }
             });
 
-
         } else if (id == R.id.nav_following) {
-            Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
-            startActivity(i);
+            following = new ArrayList<User>();
+            follower = new ArrayList<User>();
+            getFollowingData(1);
 
         } else if (id == R.id.nav_mywall) {
             Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
@@ -318,7 +351,6 @@ public class TimelineActivity extends AppCompatActivity
             // in the addAction method, if you don't want any icon, just set the first param to 0
             NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_cast_light, "Previous", pIntent).build();
             Notification mNotification = new Notification.Builder(this)
-
                     .setContentTitle("New Post!")
                     .setContentText("There is an event for you on GoGreen!")
                     .setSmallIcon(R.drawable.ic_cast_light)
@@ -326,7 +358,6 @@ public class TimelineActivity extends AppCompatActivity
                     .setSound(soundUri)
                     //.addAction(action)
                     .build();
-
 
             mNotification.defaults |= Notification.DEFAULT_VIBRATE;
             //use the above default or set custom valuse as below
@@ -347,6 +378,46 @@ public class TimelineActivity extends AppCompatActivity
         return true;
     }
 
+
+    private void getFollowingData(final int opId) {
+        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+        int currUserId = ProxyUser.getInstance().getUserId(getApplicationContext());
+        Call<ArrayList<User>> getFollowingCall = greenRESTInterface.getFollowingDetails(currUserId,opId);
+
+        getFollowingCall.enqueue(new Callback<ArrayList<User>>() {
+            ArrayList<User> temp = new ArrayList<User>();
+            @Override
+            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
+                if (response.isSuccessful()) {
+                    if(opId==1 && response.body()!=null) {
+                        temp = response.body();
+                        for(int i=0; i<temp.size();i++){
+                            following.add(temp.get(i));
+                        }
+                        getFollowingData(2);
+                    }
+                    else if(opId==2 && response.body()!=null) {
+                        temp = response.body();
+                        for(int i=0; i<temp.size();i++){
+                            follower.add(temp.get(i));
+                        }
+                        Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putSerializable("FOLLOWING",following);
+                        extras.putSerializable("FOLLOWER",follower);
+                        i.putExtras(extras);
+                        startActivity(i);
+                    }
+                } else {
+                    Log.e("GetFollowingData", "Error in response " + response.errorBody());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                Log.e("Signup", "Failure to get Following Data", t);
+            }
+        });
+    }
 
 
 }

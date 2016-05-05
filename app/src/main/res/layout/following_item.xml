@@ -4,32 +4,56 @@
     android:layout_height="wrap_content"
     android:clickable="true">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/user_image_follow"
-            android:layout_height="@dimen/icon_height"
-            android:layout_width="@dimen/icon_width"
-            android:src="@color/colorAccent"
-            android:scaleType="fitCenter"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="2dip"
-            app:riv_border_color="#333333"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:clickable="false"
-            android:focusable="false"/>
+    <ImageView
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:scaleType="fitXY"
+        android:id="@+id/user_image_follow"
+        android:src="@drawable/ic_plusone_medium_off_client"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:clickable="false"
+        android:focusable="false"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="2">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:text="Large Text"
+            android:id="@+id/userIdInfo"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/colorPrimaryDark"
             android:text="Large Text"
             android:id="@+id/username_follow"
             android:layout_gravity="center_vertical"
             android:focusable="false"/>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:text="Large Text"
+            android:id="@+id/role_follow"
+            android:layout_gravity="center_vertical"
+            android:focusable="false"/>
     </LinearLayout>
+    <ToggleButton
+        android:id="@+id/become_follower_icon"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:gravity="right|bottom"
+        android:textOff=""
+        android:textOn=""
+        android:visibility="gone"
+        android:drawableTop="@drawable/ic_person_add_white_24dp"
+        android:focusable="false"/>
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"/>
+</LinearLayout>

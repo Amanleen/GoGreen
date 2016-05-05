@@ -19,14 +19,20 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.app.NotificationCompat;
+
+import android.text.TextUtils;
+
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -51,9 +57,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import adapter.ProxyUser;
+import model.Event;
+import model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ws.remote.GreenRESTInterface;
 
 /**
  * Created by amrata on 4/4/16.
@@ -75,6 +88,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     private GoogleMap googleMap;
     Spinner interestAreaSP;
     private LatLng ll;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,108 +100,209 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         datetv = (TextView) findViewById(R.id.eventDateTextView);
         startTimetv = (TextView) findViewById(R.id.eventStartTimeTextView);
         endTimetv = (TextView) findViewById(R.id.eventEndTimeTextView);
+
         eventTitle=(EditText) findViewById(R.id.eventNameEditText);
+        eventTitle.setTag("Event Name");
+
         eventDescription = (EditText) findViewById(R.id.eventDetailEditText);
+        eventDescription.setTag("Event DEscription");
+
         enterLocation = (EditText) findViewById(R.id.enterLocEditText);
+        enterLocation.setTag("Event Location");
+
         interestAreaSP = (Spinner) findViewById(R.id.interest_spinner);
+
+
+        ImageButton eventDatebtn = (ImageButton)findViewById(R.id.iv_eventDate);
+        eventDatebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
+
+        ImageButton eventStartTime = (ImageButton)findViewById(R.id.iv_eventStartTime);
+        eventStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartTimePickerDialog(v);
+            }
+        });
+
+        ImageButton eventEndTime = (ImageButton)findViewById(R.id.iv_eventEndTime);
+        eventEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEndTimePickerDialog(v);
+            }
+        });
 
         Resources res = getResources();
         String[] interestAreaArr = res.getStringArray(R.array.interestArea_array);
         ArrayAdapter<String> adapterInterestArea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, interestAreaArr);
         interestAreaSP.setAdapter(adapterInterestArea);
 
-
         ProxyUser pUser = ProxyUser.getInstance();
         userName = pUser.getUsername(getApplicationContext());
         userId = pUser.getUserId(getApplicationContext());
 
+        Button publishButton = (Button)findViewById(R.id.publishEventButton);
+        publishButton.setOnClickListener(new View.OnClickListener() {
 
-        Button pb=(Button)findViewById(R.id.publishEventButton);
+            @Override
+            public void onClick(View v) {
+                Event event = new Event();
+                boolean createEvent=true;
+                EditText invalidEditText =  checkIfEntered(eventTitle, eventDescription, enterLocation);
 
+                if(invalidEditText != null){
+                    showToast(invalidEditText.getTag() + " field cannot be empty.");
+                }
 
-        if (pb != null) {
-            pb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new Thread(new Runnable() {
-                        public void run() {
+                if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
+                    String startTime[] = (startTimetv.getText().toString()).split(":");
+                    String endTime[] = (endTimetv.getText().toString()).split(":");
 
-                            try{
-
-
-                                String eTitle = eventTitle.getText().toString();
-                                String eDescription = eventDescription.getText().toString();
-                                String eLocation = enterLocation.getText().toString();
-                                String eDate = datetv.getText().toString();
-                                String eStartTime = startTimetv.getText().toString();
-                                String eEndTime = endTimetv.getText().toString();
-                                String interest = interestAreaSP.getSelectedItem().toString();
-                                int eInterestId = 0;
-
-                                JSONObject jsonObject = new JSONObject();
-
-                                URL url = new URL("http://192.168.0.6:8080/GoGreenServer/EventServlet");
-                                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-
-
-                                // Put Http parameter labels with value of Name Edit View control
-                                jsonObject.put("eventTitle", eTitle);
-                                jsonObject.put("eventDescription", eDescription);
-                                jsonObject.put("eventLocation", eLocation);
-                                jsonObject.put("eventDate", eDate);
-                                jsonObject.put("eventStartTime", eStartTime);
-                                jsonObject.put("eventEndTime", eEndTime);
-                                jsonObject.put("eventHostedById", userId);
-                                if(interest.equals("Indoor")){
-                                    jsonObject.put("interestAreaId", 1);
-                                }else{
-                                    jsonObject.put("interestAreaId", 2);
-                                }
-
-                                 Log.d("JSONinputString", jsonObject.toString());
-
-                                connection.setDoOutput(true);
-                                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-                                out.write(jsonObject.toString());
-                                out.close();
-
-                                //connection.disconnect();
-
-                                // connection.setDoInput(true);
-                                int responseCode = connection.getResponseCode();
-                                Log.d("Response Code = ",String.valueOf(responseCode));
-                                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                                String returnString="";
-
-                                while ((returnString = in.readLine()) != null)
-                                {
-//                      doubledValue= Integer.parseInt(returnString);
-                                    Log.d("ReturnString", returnString);
-                                    JSONObject eventResponse = new JSONObject(returnString);
-                                    int eventId = 0;
-                                    eventId = eventResponse.getInt("eventId");
-                                    insertNotification(eventId);
-                                }
-
-                                in.close();
-
-
-                            }catch(Exception e)
-                            {
-                                Log.d("Exception",e.toString());
-                            }
-
+                    if (Integer.parseInt(startTime[0]) > Integer.parseInt(endTime[0])){
+                        showToast("End time should be after start time!");
+                        createEvent=false;
+                    }else if(Integer.parseInt(startTime[0]) == Integer.parseInt(endTime[0])){
+                        if(Integer.parseInt(startTime[1]) > Integer.parseInt(endTime[1])){
+                            showToast("End time should be after start time!");
+                            createEvent=false;
                         }
-                    }).start();
+                    }
+                    showToast("Please pick start and end time!");
+                    createEvent=false;
+                }
+
+
+
 
                     Toast.makeText(CreateEventActivity.this,
                             "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
                     Intent myintent2 = new Intent(CreateEventActivity.this, TimelineActivity.class);
                     startActivity(myintent2);
+
+                if(createEvent){
+                    event.setEventStartTime(startTimetv.getText().toString());
+                    event.setEventEndTime(endTimetv.getText().toString());
+
                 }
-            });
-        }
+
+////createEvent
+//                GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+//                Call<Event> createEventCall = greenRESTInterface.createEvent(Event);
+//                createEventCall.enqueue(new Callback<Event>() {
+//                    @Override
+//                    public void onResponse(Call<Event> call, Response<Event> response) {
+//                        if (response.isSuccessful()) {
+//                            Event res = response.body();
+//                            ProxyUser pUser = ProxyUser.getInstance();
+//                            pUser.addUser(userName, res.getUserId(), getApplicationContext());
+//                            Intent i = new Intent(LoginActivity.this, TimelineActivity.class);
+//                            startActivity(i);
+//                        } else {
+//                            Log.e("Timeline", "Error in response " + response.errorBody());
+//                            Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Ivalid user-name or password!", Toast.LENGTH_SHORT);
+//                            toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                            toast.show();
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(Call<Event> call, Throwable t) {
+//                        Log.e("Login", "Failure to authenticate user", t);
+//
+//                        Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                        toast.show();
+//                    }
+//                });
+            }
+        });
+
+
+//        Button pb=(Button)findViewById(R.id.publishEventButton);
+//        if (pb != null) {
+//            pb.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    new Thread(new Runnable() {
+//                        public void run() {
+//                            try{
+//                                String eTitle = eventTitle.getText().toString();
+//                                String eDescription = eventDescription.getText().toString();
+//                                String eLocation = enterLocation.getText().toString();
+//                                String eDate = datetv.getText().toString();
+//                                String eStartTime = startTimetv.getText().toString();
+//                                String eEndTime = endTimetv.getText().toString();
+//                                String interest = interestAreaSP.getSelectedItem().toString();
+//                                int eInterestId = 0;
+//
+//                                JSONObject jsonObject = new JSONObject();
+//
+//                                URL url = new URL("http://192.168.0.6:8080/GoGreenServer/EventServlet");
+//                                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+//
+//
+//                                // Put Http parameter labels with value of Name Edit View control
+//                                jsonObject.put("eventTitle", eTitle);
+//                                jsonObject.put("eventDescription", eDescription);
+//                                jsonObject.put("eventLocation", eLocation);
+//                                jsonObject.put("eventDate", eDate);
+//                                jsonObject.put("eventStartTime", eStartTime);
+//                                jsonObject.put("eventEndTime", eEndTime);
+//                                jsonObject.put("eventHostedById", userId);
+//                                if(interest.equals("Indoor")){
+//                                    jsonObject.put("interestAreaId", 1);
+//                                }else{
+//                                    jsonObject.put("interestAreaId", 2);
+//                                }
+//
+//                                 Log.d("JSONinputString", jsonObject.toString());
+//
+//                                connection.setDoOutput(true);
+//                                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+//                                out.write(jsonObject.toString());
+//                                out.close();
+//
+//                                //connection.disconnect();
+//
+//                                // connection.setDoInput(true);
+//                                int responseCode = connection.getResponseCode();
+//                                Log.d("Response Code = ",String.valueOf(responseCode));
+//                                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//
+//                                String returnString="";
+//
+//                                while ((returnString = in.readLine()) != null)
+//                                {
+////                      doubledValue= Integer.parseInt(returnString);
+//                                    Log.d("ReturnString", returnString);
+//                                    JSONObject eventResponse = new JSONObject(returnString);
+//                                    int eventId = 0;
+//                                    eventId = eventResponse.getInt("eventId");
+//                                    insertNotification(eventId);
+//                                }
+//
+//                                in.close();
+//
+//
+//                            }catch(Exception e)
+//                            {
+//                                Log.d("Exception",e.toString());
+//                            }
+//
+//                        }
+//                    }).start();
+//
+//                    Toast.makeText(CreateEventActivity.this,
+//                            "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
+//                    Intent myintent2 = new Intent(CreateEventActivity.this, MainTimelineActivity.class);
+//                    startActivity(myintent2);
+//                }
+//            });
+//        }
 
 
         /*MySupportMapFragment msmf = new MySupportMapFragment();
@@ -198,6 +314,22 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
 
     }
+
+    public void showToast(String message){
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
+    }
+
+    EditText checkIfEntered(EditText... allInputFields) {
+        for (EditText editText : allInputFields) {
+            if (TextUtils.isEmpty(editText.getText())) {
+                return editText;
+            }
+        }
+        return null;
+    }
+
 
     private void insertNotification(int eId) {
 
@@ -393,6 +525,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             String eventTime = String.valueOf(hourOfDay)
                     + ":" + String.valueOf(minute);
+
 
             startTimetv.setText(eventTime);
             startTimetv.setVisibility(View.VISIBLE);

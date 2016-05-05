@@ -95,7 +95,6 @@ public class QuestionForumActivity extends AppCompatActivity{
 
 
 
-
     private class QAListViewAdapter extends ArrayAdapter<GreenEntry> {
 
         QAListViewAdapter(Context context, ArrayList<GreenEntry> list){

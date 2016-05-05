@@ -1,14 +1,16 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Date;
+//import java.util.Date;
+import java.sql.Blob;
+import java.sql.Date;
 
 /**
  * Created by amanleenpuri on 4/3/16.
  */
-public class GreenEntry implements Serializable{
 
-    private int questionIdForAnswers;
+public class GreenEntry implements Serializable {
+
     private int postId;
     private int postedByUserId; // or user object
     private String postType;
@@ -17,16 +19,12 @@ public class GreenEntry implements Serializable{
     private String postImageURL;
     private int numOfShares;
     private int numOfStars;
+
     private String postByUserName;
     private String userImage;
 
+    private int questionIdForAnswers;
 
-
-    public GreenEntry(String postType_, int postId_, String postMessage_){
-        this.setPostType(postType_);
-        this.setPostId(postId_);
-        this.setPostMessage(postMessage_);
-    }
     public GreenEntry(){
 
     }
@@ -48,6 +46,7 @@ public class GreenEntry implements Serializable{
         this.postMessage=postMsg;
         this.postImageURL=pic;
     }
+
 
     public GreenEntry(int qid, int postidInt,int userid_posted, String postTypeString, String postMsg, String blob,String uName, String uImage, Date date) {
         this.questionIdForAnswers=qid;
@@ -76,6 +75,7 @@ public class GreenEntry implements Serializable{
         // TODO Auto-generated constructor stub
     }
 
+
     public GreenEntry(int qid, int postidInt,int userid_posted, String postTypeString, String postMsg, String blob, Date date) {
         this.questionIdForAnswers=qid;
         this.postId=postidInt;
@@ -86,7 +86,6 @@ public class GreenEntry implements Serializable{
         this.datePosted = date.toString();
         // TODO Auto-generated constructor stub
     }
-
 
 
     public GreenEntry(int usr, String postTyp, String postMsg, String pic) {
@@ -109,20 +108,22 @@ public class GreenEntry implements Serializable{
         return postByUserName;
     }
 
+
     public void setPostByUserName(String postByUserName) {
         this.postByUserName = postByUserName;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
     public int getQuestionIdForAnswers() {
         return questionIdForAnswers;
     }
     public void setQuestionIdForAnswers(int qId) {
         this.questionIdForAnswers = qId;
-    }
-    public int getPostId() {
-        return postId;
-    }
-    public void setPostId(int postId) {
-        this.postId = postId;
     }
     public int getPostedByUserId() {
         return postedByUserId;
@@ -167,6 +168,7 @@ public class GreenEntry implements Serializable{
         this.numOfStars = numOfStars;
     }
 
+
     @Override
     public String toString() {
         return "GreenEntry{" +
@@ -184,3 +186,6 @@ public class GreenEntry implements Serializable{
                 '}';
     }
 }
+
+
+

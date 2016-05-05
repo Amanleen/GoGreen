@@ -3,11 +3,13 @@ package model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * @author Tejal Shah
  *
  */
-public class Event implements Parcelable {
+public class Event implements Serializable {
 
     private int eventId;
     private String eventTitle;
@@ -16,7 +18,7 @@ public class Event implements Parcelable {
     private String eventDate;
     private String eventStartTime;
     private String eventEndTime;
-    private String hostName;
+    //private String hostName;
     private int eventHostedById;
     private int interestAreaId;
 
@@ -32,11 +34,21 @@ public class Event implements Parcelable {
         eventStartTime = eStart;
         eventEndTime = eEnd;
         eventHostedById = eBy;
-        hostName = getUserNameById(eBy);
+        //hostName = getUserNameById(eBy);
+    }
+
+    public Event(int eId,String title, String description, String location, String eDate, String eStTime, String eEnTime){
+        this.eventId = eId;
+        this.eventTitle = title;
+        this.eventDescription = description;
+        this.eventLocation = location;
+        this.eventDate = eDate;
+        this.eventStartTime = eStTime;
+        this.eventEndTime = eEnTime;
     }
 
 
-    public Event(Parcel in) {
+    /*public Event(Parcel in) {
         eventId = in.readInt();
         eventTitle = in.readString();
         eventDescription = in.readString();
@@ -76,7 +88,7 @@ public class Event implements Parcelable {
         public Event[] newArray(int size) {
             return new Event[size];
         }
-    };
+    };*/
 
     public int getEventId() {
         return eventId;
@@ -132,10 +144,23 @@ public class Event implements Parcelable {
     public void setInterestAreaId(int interestAreaId) {
         this.interestAreaId = interestAreaId;
     }
-
-
-    public String getUserNameById(int id){
+    /*public String getUserNameById(int id){
         return "Amu";
+    }*/
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventId=" + eventId +
+                ", eventTitle='" + eventTitle + '\'' +
+                ", eventDescription='" + eventDescription + '\'' +
+                ", eventLocation='" + eventLocation + '\'' +
+                ", eventDate='" + eventDate + '\'' +
+                ", eventStartTime='" + eventStartTime + '\'' +
+                ", eventEndTime='" + eventEndTime + '\'' +
+                ", eventHostedById=" + eventHostedById +
+                ", interestAreaId=" + interestAreaId +
+                '}';
     }
 }
 

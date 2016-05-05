@@ -40,6 +40,8 @@ public class QuestionForumActivity extends AppCompatActivity{
     //ArrayList<GreenEntry> ansData;
     ListView qaList;
     ListView ansList;
+    private int QuestID;
+    private String QuestTXT;
 
 
 
@@ -117,6 +119,7 @@ public class QuestionForumActivity extends AppCompatActivity{
             Button viewAnsB=(Button) convertView.findViewById(R.id.viewAnsButton);
 
             final View cv = convertView;
+            final String qText = ge.getPostMessage();
 
             question.setText("Q. "+ ge.getPostMessage());
             //viewAnsB.setText("Answers " +ansData.size());
@@ -125,7 +128,7 @@ public class QuestionForumActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     ArrayList ansData = new ArrayList<>();
-                    ansData= setAnsList(cv,QID);
+                    ansData= setAnsList(cv,QID,qText);
 
                 }
             });
@@ -134,9 +137,12 @@ public class QuestionForumActivity extends AppCompatActivity{
         }
     }
 
-     public ArrayList<GreenEntry> setAnsList(final View cv,int qId){
+     public ArrayList<GreenEntry> setAnsList(final View cv,int qId, String qText){
 
         final int QID = qId;
+        final String QTX =  qText;
+         QuestID = qId;
+         QuestTXT = qText;
 
          final ArrayList<GreenEntry> ansData = new ArrayList<GreenEntry>();
         GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
@@ -166,6 +172,8 @@ public class QuestionForumActivity extends AppCompatActivity{
                     }
                     else {
                         Intent intent = new Intent(QuestionForumActivity.this, AnswerActivity.class);
+                        intent.putExtra("QTEXT",QTX);
+                        intent.putExtra("QID", QID);
                         startActivity(intent);
                     }
 
@@ -185,10 +193,12 @@ public class QuestionForumActivity extends AppCompatActivity{
 
     private class ANSListViewAdapter extends ArrayAdapter<GreenEntry> {
         ArrayList<GreenEntry> tempArr;
+        int qid=0;
 
         ANSListViewAdapter(Context context, ArrayList<GreenEntry> list){
             super(context, android.R.layout.simple_list_item_1,list);
             this.tempArr = list;
+
         }
 
         @Override
@@ -216,6 +226,8 @@ public class QuestionForumActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), AnswerActivity.class);
+                    intent.putExtra("QTEXT",QuestTXT);
+                    intent.putExtra("QID", QuestID);
                     startActivity(intent);
                 }
             });

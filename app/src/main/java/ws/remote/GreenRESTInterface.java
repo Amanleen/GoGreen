@@ -66,4 +66,10 @@ public interface GreenRESTInterface {
     @POST("EventServlet")
     Call<Event> createEvent(@Body Event event);
 
+    @POST("AnswerServlet")
+    Call<GreenEntry> createAnswer(@Body GreenEntry ge);
+
+    @POST("NotificationServlet")
+    Call<Notification> createNotification(@Body Notification n);
+
 }

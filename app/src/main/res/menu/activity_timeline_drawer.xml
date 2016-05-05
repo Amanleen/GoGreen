@@ -16,8 +16,8 @@
                 android:title="Create Event" />
             <item android:id="@+id/qa_forum" android:icon="@android:drawable/ic_menu_help"
                 android:title="QnA Forum" />
-            <item android:id="@+id/activate_notification" android:icon="@android:drawable/ic_dialog_info"
-                android:title="Notify Sample" />
+            <!--item android:id="@+id/activate_notification" android:icon="@android:drawable/ic_dialog_info"
+                android:title="Notify Sample" /-->
         </menu>
     </item>
 

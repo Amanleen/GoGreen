@@ -48,6 +48,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
     private AlertDialog levelDialog;
     private String blogType;
     private int userId;
+    Bitmap _bm;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE_FOR_AVATAR = 0;
@@ -69,6 +70,15 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
             imageView = (ImageView) findViewById(R.id.iv_Photo);
             Button btnBlogPost = (Button) findViewById(R.id.btn_blogPost);
             final EditText blogMsgET = (EditText) findViewById(R.id.editTextBlog);
+
+              if(getIntent().hasExtra("imgArray")) {
+                  imageView.setVisibility(View.VISIBLE);
+                _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);		              _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);
+                  imageView.setImageBitmap(_bm);
+            }
+
+
+
             ImageButton cameraBtn = (ImageButton)findViewById(R.id.btn_camera);
             cameraBtn.setOnClickListener(new Button.OnClickListener(){
                 @Override
@@ -157,18 +167,40 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            final Bitmap imageBitmap = (Bitmap) extras.get("data");
             IMAGE_BIT_MAP_IN_STRING = ImageHelper.getBitMapToString(imageBitmap);
             imageView.setImageBitmap(imageBitmap);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
+                    Bitmap bm = imageBitmap; // your bitmap
+                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                    tagIntent.putExtra("byteArray", bs.toByteArray());
+                    startActivity(tagIntent);
+                }
+            });
         }
         if (requestCode == PICK_IMAGE_FOR_AVATAR && resultCode == RESULT_OK) {
             Uri uri = null;
             if (data != null) {
                 uri = data.getData();
                 try {
-                    Bitmap imageBitmap = getBitmapFromUri(uri);
+                    final Bitmap imageBitmap = getBitmapFromUri(uri);
                     IMAGE_BIT_MAP_IN_STRING = ImageHelper.getBitMapToString(imageBitmap);
                     imageView.setImageBitmap(imageBitmap);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
+                            Bitmap bm = imageBitmap; // your bitmap
+                            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                            bm.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                            tagIntent.putExtra("byteArray", bs.toByteArray());
+                            startActivity(tagIntent);
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -207,7 +239,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private View.OnClickListener clickListener = new View.OnClickListener() {
+    /*private View.OnClickListener clickListener = new View.OnClickListener() {
 
         public void onClick(View v) {
             Intent tagIntent = new Intent(BlogTagAskActivity.this, TagATreeActivity.class);
@@ -217,7 +249,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
             tagIntent.putExtra("byteArray", bs.toByteArray());
             startActivity(tagIntent);
         }
-    };
+    };*/
 
     @Override
     protected void onDestroy() {

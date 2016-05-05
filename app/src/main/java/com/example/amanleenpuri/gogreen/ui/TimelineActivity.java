@@ -83,6 +83,12 @@ public class TimelineActivity extends AppCompatActivity
             setContentView(R.layout.activity_timeline);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                updateNotificationsBadge(extras.getInt("BADGE_COUNT"));
+            }
+
+
             new FetchCountTask().execute();
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
             Call<GreenEntry[]> getTimeLineCall = greenRESTInterface.getTimeline(1);
@@ -184,10 +190,12 @@ public class TimelineActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_notifications) {
+            Log.v("AAAAAAAAAAAA","I AM CLICKED");
             updateNotificationsBadge(0);
             noteData=new ArrayList<model.Notification>();
             GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
             Call<List<model.Notification>> getNs = greenRESTInterface.getAllNotifications();
+            Log.v("AAAAAAAAAAAA",getNs.toString());
             getNs.enqueue(new Callback<List<model.Notification>>() {
 
                 List<model.Notification> arrN=new ArrayList<model.Notification>();
@@ -196,11 +204,13 @@ public class TimelineActivity extends AppCompatActivity
                     if (response.isSuccessful()) {
 
                         arrN = response.body();
+                        Log.v("AAAAAAAAAAAA",arrN.toString());
                         for(int i=0;i<arrN.size();i++){
 
                             noteData.add(arrN.get(i));
 
                         }
+                        Log.v("AAAAAAAAAAAA",noteData.toString());
                         Intent intent = new Intent(TimelineActivity.this, NotificationActivity.class);
                         Bundle extras = new Bundle();
                         extras.putSerializable("NOTIFS",noteData);
@@ -336,7 +346,7 @@ public class TimelineActivity extends AppCompatActivity
                 }
             });
 
-        } else if (id == R.id.activate_notification) {
+        } /*else if (id == R.id.activate_notification) {
             // define sound URI, the sound to be played when there's a notification
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -371,7 +381,7 @@ public class TimelineActivity extends AppCompatActivity
 
             notificationManager.notify(0, mNotification);
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

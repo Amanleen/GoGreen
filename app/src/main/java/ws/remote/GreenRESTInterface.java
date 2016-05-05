@@ -55,7 +55,7 @@ public interface GreenRESTInterface {
     Call<GreenEntry> createGreenEntry(@Body GreenEntry greenEntry);
 
     @GET("TimelineServlet")
-    Call<GreenEntry[]> getTimeline(@Query("opId") int opId);
+    Call<ArrayList<GreenEntry>> getTimeline(@Query("opId") int opId);
 
     @GET("FollowingServlet")
     Call<ArrayList<User>> getFollowingDetails(@Query("userId") int userId, @Query("opId") int opId);

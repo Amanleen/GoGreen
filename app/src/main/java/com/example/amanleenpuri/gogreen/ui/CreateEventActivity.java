@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -81,6 +82,30 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         eventDescription = (EditText) findViewById(R.id.eventDetailEditText);
         enterLocation = (EditText) findViewById(R.id.enterLocEditText);
         interestAreaSP = (Spinner) findViewById(R.id.interest_spinner);
+
+        ImageButton eventDatebtn = (ImageButton)findViewById(R.id.iv_eventDate);
+        eventDatebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
+
+        ImageButton eventStartTime = (ImageButton)findViewById(R.id.iv_eventStartTime);
+        eventStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartTimePickerDialog(v);
+            }
+        });
+
+        ImageButton eventEndTime = (ImageButton)findViewById(R.id.iv_eventEndTime);
+        eventEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEndTimePickerDialog(v);
+            }
+        });
 
         Resources res = getResources();
         String[] interestAreaArr = res.getStringArray(R.array.interestArea_array);

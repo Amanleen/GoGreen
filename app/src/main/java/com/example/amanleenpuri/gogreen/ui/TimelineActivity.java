@@ -167,7 +167,7 @@ public class TimelineActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            return false;
         }
         if (id == R.id.action_search) {
             Intent intent = new Intent(this, SearchResultsActivity.class);
@@ -179,7 +179,6 @@ public class TimelineActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

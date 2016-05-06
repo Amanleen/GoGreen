@@ -9,7 +9,6 @@
         android:layout_height="@dimen/icon_height"
         android:scaleType="fitXY"
         android:id="@+id/user_image_follow"
-        android:src="@drawable/ic_plusone_medium_off_client"
         android:layout_marginRight="@dimen/fab_margin"
         android:clickable="false"
         android:focusable="false"/>

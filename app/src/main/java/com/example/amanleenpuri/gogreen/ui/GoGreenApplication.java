@@ -15,11 +15,13 @@ import ws.remote.GreenRESTInterface;
 public class GoGreenApplication extends Application {
 
 
-    public static final String BASE_URL = "http://192.168.0.6:8080/GoGreenServer/";
+    //public static final String BASE_URL = "http://192.168.0.6:8080/GoGreenServer/";
     //public static final String BASE_URL = "http://172.29.92.27:8080/GoGreenServer/";
     //public static final String BASE_URL = "http://10.1.10.15:8080/GoGreenServer/";
 
    // public static final String BASE_URL = "http://172.29.93.176:8080/GoGreenServer/";
+//    public static final String BASE_URL = "http://172.29.93.176:8080/GoGreenServer/";
+    public static final String BASE_URL = "http://10.1.10.15:8080/GoGreenServer/";
     private Retrofit mRetrofitService;
     private GreenRESTInterface mGoGreenApiService;
 

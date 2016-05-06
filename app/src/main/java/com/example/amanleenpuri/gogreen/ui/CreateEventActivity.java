@@ -176,6 +176,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 }else if(!datetv.getText().toString().isEmpty() && datepicked.before(today)) {
                         showToast("Date specified for event shuld not be BEFORE today");
                 }else if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
+                    createEvent=false;
+                }
+
+               /* if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
+                    System.out.println("-------Start="+startTimetv.getText().toString());
+                    System.out.println("-------end="+endTimetv.getText().toString());
                     String startTime[] = (startTimetv.getText().toString()).split(":");
                     String endTime[] = (endTimetv.getText().toString()).split(":");
 
@@ -187,7 +193,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                             showToast("End time should be after start time!");
 
                         }
-                    }
+                    }*/
                     //showToast("Please pick start and end time!");
                     //createEvent=false;
                 }
@@ -243,101 +249,21 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                         }
                     });
                // }
+                }else{
+                    showToast("Please pick start and end time!");
+                    createEvent=false;
+                }
+                if(createEvent)
+                {
+                    Toast.makeText(CreateEventActivity.this,
+                            "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
+                    Intent myintent2 = new Intent(CreateEventActivity.this, TimelineActivity.class);
+                    startActivity(myintent2);
+                    event.setEventStartTime(startTimetv.getText().toString());
+                    event.setEventEndTime(endTimetv.getText().toString());
+                }
             }
         });
-
-
-//        Button pb=(Button)findViewById(R.id.publishEventButton);
-//        if (pb != null) {
-//            pb.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    new Thread(new Runnable() {
-//                        public void run() {
-//                            try{
-//                                String eTitle = eventTitle.getText().toString();
-//                                String eDescription = eventDescription.getText().toString();
-//                                String eLocation = enterLocation.getText().toString();
-//                                String eDate = datetv.getText().toString();
-//                                String eStartTime = startTimetv.getText().toString();
-//                                String eEndTime = endTimetv.getText().toString();
-//                                String interest = interestAreaSP.getSelectedItem().toString();
-//                                int eInterestId = 0;
-//
-//                                JSONObject jsonObject = new JSONObject();
-//
-//                                URL url = new URL("http://192.168.0.6:8080/GoGreenServer/EventServlet");
-//                                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-//
-//
-//                                // Put Http parameter labels with value of Name Edit View control
-//                                jsonObject.put("eventTitle", eTitle);
-//                                jsonObject.put("eventDescription", eDescription);
-//                                jsonObject.put("eventLocation", eLocation);
-//                                jsonObject.put("eventDate", eDate);
-//                                jsonObject.put("eventStartTime", eStartTime);
-//                                jsonObject.put("eventEndTime", eEndTime);
-//                                jsonObject.put("eventHostedById", userId);
-//                                if(interest.equals("Indoor")){
-//                                    jsonObject.put("interestAreaId", 1);
-//                                }else{
-//                                    jsonObject.put("interestAreaId", 2);
-//                                }
-//
-//                                 Log.d("JSONinputString", jsonObject.toString());
-//
-//                                connection.setDoOutput(true);
-//                                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-//                                out.write(jsonObject.toString());
-//                                out.close();
-//
-//                                //connection.disconnect();
-//
-//                                // connection.setDoInput(true);
-//                                int responseCode = connection.getResponseCode();
-//                                Log.d("Response Code = ",String.valueOf(responseCode));
-//                                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//
-//                                String returnString="";
-//
-//                                while ((returnString = in.readLine()) != null)
-//                                {
-////                      doubledValue= Integer.parseInt(returnString);
-//                                    Log.d("ReturnString", returnString);
-//                                    JSONObject eventResponse = new JSONObject(returnString);
-//                                    int eventId = 0;
-//                                    eventId = eventResponse.getInt("eventId");
-//                                    insertNotification(eventId);
-//                                }
-//
-//                                in.close();
-//
-//
-//                            }catch(Exception e)
-//                            {
-//                                Log.d("Exception",e.toString());
-//                            }
-//
-//                        }
-//                    }).start();
-//
-//                    Toast.makeText(CreateEventActivity.this,
-//                            "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
-//                    Intent myintent2 = new Intent(CreateEventActivity.this, MainTimelineActivity.class);
-//                    startActivity(myintent2);
-//                }
-//            });
-//        }
-
-
-        /*MySupportMapFragment msmf = new MySupportMapFragment();
-        View mapView = msmf.getView();
-        if(mapView!=null) {
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
-            mapView.getContext().startActivity(intent);
-        }*/
-
-
     }
 
     public void showToast(String message){

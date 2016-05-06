@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Collections;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -76,11 +77,16 @@ public class TimelineActivity extends AppCompatActivity
     private ListView timelinelv;
     private int userId=0;
     private TimeLineListViewAdapter timelineLVAdapter;
-
+    private HashSet<Integer> follow = new HashSet<Integer>();
+    private static final int FOLLOWERS_OP = 2;
+    private static final int FOLLOWING_OP = 1;
+    private static final int TIMELINE_FOLLOW_OP = 3;
+    private static final int FLAG_FOR_BLOG = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ProxyUser pUser = ProxyUser.getInstance();
         String userName = pUser.getUsername(getApplicationContext());
         userId = pUser.getUserId(getApplicationContext());
@@ -95,6 +101,8 @@ public class TimelineActivity extends AppCompatActivity
 
         } else {
             setContentView(R.layout.activity_timeline);
+
+
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             Bundle extras = getIntent().getExtras();
@@ -104,39 +112,42 @@ public class TimelineActivity extends AppCompatActivity
 
 
             new FetchCountTask().execute();
+
             ListView timelinelv = (ListView) findViewById(R.id.list);
             greenEntryListArray = new ArrayList<GreenEntry>();
-            timelineLVAdapter = new TimeLineListViewAdapter(getBaseContext(),greenEntryListArray, userId);
+            timelineLVAdapter = new TimeLineListViewAdapter(getBaseContext(),greenEntryListArray, userId, follow);
             timelinelv.setAdapter(timelineLVAdapter);
 
-            GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
-            Call<ArrayList<GreenEntry>> getTimeLineCall = greenRESTInterface.getTimeline(1);
-            getTimeLineCall.enqueue(new Callback<ArrayList<GreenEntry>>() {
-                @Override
-                public void onResponse(Call<ArrayList<GreenEntry>> call, Response<ArrayList<GreenEntry>> response) {
-                    if (response.isSuccessful()) {
-                        ArrayList<GreenEntry> res = response.body();
-                        Collections.reverse(res);
-                        bufferGreenEntryListArray = res;
-                        timelineLVAdapter.addAll(res);
+            getFollowingData(TIMELINE_FOLLOW_OP);
 
-                    } else {
-                        Log.e("Timeline", "Error in response " + response.errorBody());
-                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Could't fetch data!", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                        toast.show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ArrayList<GreenEntry>> call, Throwable t) {
-                    Log.e("Login", "Failure to authenticate user", t);
-
-                    Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                    toast.show();
-                }
-            });
+//            GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+//            Call<ArrayList<GreenEntry>> getTimeLineCall = greenRESTInterface.getTimeline(1);
+//            getTimeLineCall.enqueue(new Callback<ArrayList<GreenEntry>>() {
+//                @Override
+//                public void onResponse(Call<ArrayList<GreenEntry>> call, Response<ArrayList<GreenEntry>> response) {
+//                    if (response.isSuccessful()) {
+//                        ArrayList<GreenEntry> res = response.body();
+//                        Collections.reverse(res);
+//                        bufferGreenEntryListArray = res;
+//                        timelineLVAdapter.addAll(res);
+//
+//                    } else {
+//                        Log.e("Timeline", "Error in response " + response.errorBody());
+//                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Could't fetch data!", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                        toast.show();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ArrayList<GreenEntry>> call, Throwable t) {
+//                    Log.e("Login", "Failure to authenticate user", t);
+//                    Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+//                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                    toast.show();
+//                }
+//            });
 
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +170,36 @@ public class TimelineActivity extends AppCompatActivity
         }
     }
 
+    private void getTimeline(){
+        GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+        Call<ArrayList<GreenEntry>> getTimeLineCall = greenRESTInterface.getTimeline(FLAG_FOR_BLOG);
+        getTimeLineCall.enqueue(new Callback<ArrayList<GreenEntry>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GreenEntry>> call, Response<ArrayList<GreenEntry>> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<GreenEntry> res = response.body();
+                    Collections.reverse(res);
+                    bufferGreenEntryListArray = res;
+                    timelineLVAdapter.addAll(res);
+
+                } else {
+                    Log.e("Timeline", "Error in response " + response.errorBody());
+                    Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Could't fetch data!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GreenEntry>> call, Throwable t) {
+                Log.e("Login", "Failure to authenticate user", t);
+                Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+            }
+        });
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -221,16 +262,19 @@ public class TimelineActivity extends AppCompatActivity
         }
     }
 
+    public void showToastMessage(String message){
+        Toast toast= Toast.makeText(getApplicationContext(),
+               message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
+    }
+
     private void doMySearch(String query) {
         System.out.println("************ in do my search ****************");
         ArrayList<GreenEntry> searchArrayList = new ArrayList<GreenEntry>();
         if(query.equalsIgnoreCase("done")){
             restoreTimeline();
-            Toast toast= Toast.makeText(getApplicationContext(),
-                    " done is end search", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-            toast.show();
-
+            showToastMessage(" done is end search");
         }else {
             for (int i = 0; i < greenEntryListArray.size(); i++) {
                 String postMessage = greenEntryListArray.get(i).getPostMessage();
@@ -242,19 +286,13 @@ public class TimelineActivity extends AppCompatActivity
         }
         System.out.println("************ searchArrayList.size()="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
         if(searchArrayList.size()>0){
-            System.out.println("************ 1="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
             timelineLVAdapter.clear();
             timelineLVAdapter.addAll(searchArrayList);
             timelineLVAdapter.notifyDataSetChanged();
+            showToastMessage(searchArrayList.size()+" results found for:" + query);
         }else if(searchArrayList.size()==0) {
             restoreTimeline();
-
-//            System.out.println("************ 2 =" + searchArrayList.size() + " ******** greenEntryListArray=" + greenEntryListArray.size());
-//            timelineLVAdapter.clear();
-//            greenEntryListArray = bufferGreenEntryListArray;
-//            timelineLVAdapter.addAll(greenEntryListArray);
-//            timelineLVAdapter.notifyDataSetChanged();
-//            System.out.println("************ 2 1 =" + searchArrayList.size() + " ******** greenEntryListArray=" + greenEntryListArray.size());
+            showToastMessage("No results found for:" + query);
         }
 
     }
@@ -276,8 +314,6 @@ public class TimelineActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_search) {
-//            Intent intent = new Intent(this, SearchResultsActivity.class);
-//            startActivity(intent);
             onSearchRequested();
             return true;
         }
@@ -320,9 +356,9 @@ public class TimelineActivity extends AppCompatActivity
             });
 
             return true;
-
         }
         return super.onOptionsItemSelected(item);
+
     }
 
     public void updateNotificationsBadge(int count) {
@@ -393,7 +429,7 @@ public class TimelineActivity extends AppCompatActivity
         } else if (id == R.id.nav_following) {
             following = new ArrayList<User>();
             follower = new ArrayList<User>();
-            getFollowingData(1);
+            getFollowingData(FOLLOWING_OP);
 
         } else if (id == R.id.nav_mywall) {
             Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
@@ -485,25 +521,51 @@ public class TimelineActivity extends AppCompatActivity
     private void getFollowingData(final int opId) {
         GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
         int currUserId = ProxyUser.getInstance().getUserId(getApplicationContext());
-        Call<ArrayList<User>> getFollowingCall = greenRESTInterface.getFollowingDetails(currUserId,opId);
+        int psedoOpId=0;
+        System.out.println("***************** opId="+opId);
+        if(opId==FOLLOWERS_OP){
+            psedoOpId=FOLLOWERS_OP;
+        }
+        else if(opId==FOLLOWING_OP || opId == TIMELINE_FOLLOW_OP){
+            psedoOpId= FOLLOWING_OP;
+        }
+        System.out.println("***************** psedoOpId="+psedoOpId);
+        Call<ArrayList<User>> getFollowingCall = greenRESTInterface.getFollowingDetails(currUserId,psedoOpId);
 
         getFollowingCall.enqueue(new Callback<ArrayList<User>>() {
             ArrayList<User> temp = new ArrayList<User>();
             @Override
             public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
                 if (response.isSuccessful()) {
-                    if(opId==1 && response.body()!=null) {
+
+                    if((opId==FOLLOWING_OP || opId==TIMELINE_FOLLOW_OP) && response.body()!=null) {
+                        following = new ArrayList<User>();
                         temp = response.body();
+                        System.out.println("************** IN 1 *** temp="+temp);
                         for(int i=0; i<temp.size();i++){
                             following.add(temp.get(i));
                         }
-                        getFollowingData(2);
+                        System.out.println("***************** following="+following);
+                        if(opId==FOLLOWING_OP){
+                            System.out.println("***************** Be4 getFollowingData");
+                            getFollowingData(FOLLOWERS_OP);
+                        }
+                        else if (opId==TIMELINE_FOLLOW_OP){
+                            for(int i=0;i<temp.size();i++){
+                                follow.add(temp.get(i).getUserId());
+                            }
+                            System.out.println("***************** Be4 getTimeline follow="+follow);
+                            getTimeline();
+                        }
                     }
-                    else if(opId==2 && response.body()!=null) {
+                    else if(opId==FOLLOWERS_OP && response.body()!=null) {
+                        System.out.println("************ IN  2 ***** temp="+temp);
+                        follower = new ArrayList<User>();
                         temp = response.body();
                         for(int i=0; i<temp.size();i++){
                             follower.add(temp.get(i));
                         }
+                        System.out.println("************ IN  2 ***** follower="+follower);
                         Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
                         Bundle extras = new Bundle();
                         extras.putSerializable("FOLLOWING",following);

@@ -14,6 +14,7 @@ import model.Event;
 import model.Following;
 import model.GreenEntry;
 
+import model.Share;
 import model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -71,5 +72,8 @@ public interface GreenRESTInterface {
 
     @POST("NotificationServlet")
     Call<Notification> createNotification(@Body Notification n);
+
+    @POST("ShareServlet")
+    Call<Share> setShare(@Body Share s);
 
 }

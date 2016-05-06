@@ -60,10 +60,13 @@ public class NotificationActivity extends AppCompatActivity {
             Log.v("!!!!!!!!!!!!!!!!","I AM HERE");
             Bundle arguments = new Bundle();
             Bundle extras = getIntent().getExtras();
+            if(extras!=null) {
 
                 noteData = (ArrayList<Notification>) extras.getSerializable("NOTIFS");
+                Log.v("!!!!!!!!!!!!!!!!",noteData.toString());
+            }
 
-            Log.v("!!!!!!!!!!!!!!!!",noteData.toString());
+
         }
         /*try {
             noteData = setNoteList();

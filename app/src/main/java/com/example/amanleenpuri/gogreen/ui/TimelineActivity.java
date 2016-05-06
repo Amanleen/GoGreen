@@ -319,8 +319,6 @@ public class TimelineActivity extends AppCompatActivity
                 }
             });
 
-            Intent i = new Intent(this, NotificationActivity.class);
-            startActivity(i);
             return true;
 
         }

@@ -283,7 +283,7 @@ public class MainTimelineActivity extends AppCompatActivity implements Navigatio
             Intent i = new Intent(getApplicationContext(), CreateEventActivity.class);
             startActivity(i);
 
-        } else if (id == R.id.activate_notification) {
+        } else if (id == R.id.action_notifications) {
             // define sound URI, the sound to be played when there's a notification
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 

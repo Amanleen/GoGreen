@@ -78,6 +78,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
     public static FragmentManager fragmentManager;
     private static TextView datetv;
     private int userId;
+    private static Date datepicked;
+    private static Date today;
 
     public static int count = 0;
     private String userName;
@@ -115,6 +117,15 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         enterLocation.setTag("Event Location");
 
         interestAreaSP = (Spinner) findViewById(R.id.interest_spinner);
+
+        Calendar cToday = Calendar.getInstance();
+        cToday.set(Calendar.HOUR_OF_DAY, 0);
+        cToday.set(Calendar.MINUTE, 0);
+        cToday.set(Calendar.SECOND, 0);
+        cToday.set(Calendar.MILLISECOND, 0);
+
+        today = cToday.getTime();
+
 
 
         ImageButton eventDatebtn = (ImageButton)findViewById(R.id.iv_eventDate);
@@ -154,88 +165,84 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 Event event = new Event();
-                boolean createEvent=true;
+
                 EditText invalidEditText =  checkIfEntered(eventTitle, eventDescription, enterLocation);
+
 
                 if(invalidEditText != null){
                     showToast(invalidEditText.getTag() + " field cannot be empty.");
-                }
-
-               /* if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
+                }else if (datetv.getText().toString().isEmpty()){
+                        showToast("Event Date is mandatory field");
+                }else if(!datetv.getText().toString().isEmpty() && datepicked.before(today)) {
+                        showToast("Date specified for event shuld not be BEFORE today");
+                }else if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
                     String startTime[] = (startTimetv.getText().toString()).split(":");
                     String endTime[] = (endTimetv.getText().toString()).split(":");
 
                     if (Integer.parseInt(startTime[0]) > Integer.parseInt(endTime[0])){
                         showToast("End time should be after start time!");
-                        createEvent=false;
+
                     }else if(Integer.parseInt(startTime[0]) == Integer.parseInt(endTime[0])){
                         if(Integer.parseInt(startTime[1]) > Integer.parseInt(endTime[1])){
                             showToast("End time should be after start time!");
-                            createEvent=false;
+
                         }
                     }
-                    showToast("Please pick start and end time!");
-                    createEvent=false;
-                }*/
-
-
-
-
-                     /*Intent myintent2 = new Intent(CreateEventActivity.this, TimelineActivity.class);
-                    startActivity(myintent2);*/
-
-                if(createEvent){
+                    //showToast("Please pick start and end time!");
+                    //createEvent=false;
+                }
+                //else {
                     event.setEventDate(datetv.getText().toString());
                     event.setEventStartTime(startTimetv.getText().toString());
                     event.setEventEndTime(endTimetv.getText().toString());
 
-                }
-
-                event.setEventTitle(eventTitle.getText().toString());
-                event.setEventDescription(eventDescription.getText().toString());
-                event.setEventLocation(enterLocation.getText().toString());
-                event.setEventHostedById(userId);
-                String interest = interestAreaSP.getSelectedItem().toString();
-                if(interest.equals("Indoor")){
-                    event.setInterestAreaId(1);
-                }else{
-                    event.setInterestAreaId(2);
-                }
+                    event.setEventTitle(eventTitle.getText().toString());
+                    event.setEventDescription(eventDescription.getText().toString());
+                    event.setEventLocation(enterLocation.getText().toString());
+                    event.setEventHostedById(userId);
+                        String interest = interestAreaSP.getSelectedItem().toString();
+                        if (interest.equals("Indoor")) {
+                            event.setInterestAreaId(1);
+                        } else {
+                            event.setInterestAreaId(2);
+                        }
 
 
 ////createEvent
-                GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
-                Call<Event> createEventCall = greenRESTInterface.createEvent(event);
-                Log.v("EVENT%%%%%%%%%%%%%%",event.toString());
-                createEventCall.enqueue(new Callback<Event>() {
-                    @Override
-                    public void onResponse(Call<Event> call, Response<Event> response) {
-                        if (response.isSuccessful()) {
-                            Event res = response.body();
+                    GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+                    Call<Event> createEventCall = greenRESTInterface.createEvent(event);
+                    Log.v("EVENT%%%%%%%%%%%%%%", event.toString());
+                    createEventCall.enqueue(new Callback<Event>() {
+                        @Override
+                        public void onResponse(Call<Event> call, Response<Event> response) {
+                            if (response.isSuccessful()) {
+                                Event res = response.body();
 
-                            //eventId = eventResponse.getInt("eventId");
-                            insertNotification(res.getEventId());
-                            Toast.makeText(CreateEventActivity.this,
-                                    "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
+                                //eventId = eventResponse.getInt("eventId");
+                                insertNotification(res.getEventId());
+                                Toast.makeText(CreateEventActivity.this,
+                                        "Event will be published to all users of GoGreen", Toast.LENGTH_SHORT).show();
 
-                            //Intent i = new Intent(CreateEventActivity.this, TimelineActivity.class);
-                            //startActivity(i);
-                        } else {
-                            Log.e("CREATE_EVENT", "Error in response " + response.errorBody());
-                            Toast toast = Toast.makeText(getApplicationContext(), "ERROR in response Event", Toast.LENGTH_SHORT);
+                                //Intent i = new Intent(CreateEventActivity.this, TimelineActivity.class);
+                                //startActivity(i);
+                            } else {
+                                Log.e("CREATE_EVENT", "Error in response " + response.errorBody());
+                                Toast toast = Toast.makeText(getApplicationContext(), "ERROR in response Event", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                                toast.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Event> call, Throwable t) {
+                            Log.e("Event Creation", "Failure to create an event", t);
+
+                            Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                             toast.show();
                         }
-                    }
-                    @Override
-                    public void onFailure(Call<Event> call, Throwable t) {
-                        Log.e("Event Creation", "Failure to create an event", t);
-
-                        Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                        toast.show();
-                    }
-                });
+                    });
+               // }
             }
         });
 
@@ -403,7 +410,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     count++;
 
 
-                    Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
+                    Intent i = new Intent(CreateEventActivity.this, TimelineActivity.class);
                     i.putExtra("BADGE_COUNT",count);
                     startActivity(i);
                 } else {
@@ -571,20 +578,30 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
+
+
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            String eventDate = String.valueOf(month)
-                    + "/" + String.valueOf(day)+"/"+String.valueOf(year);
+            //String eventDate = String.valueOf(month)
+              //      + "/" + String.valueOf(day)+"/"+String.valueOf(year);
+            Calendar cPicked = Calendar.getInstance();
+            cPicked.set(Calendar.YEAR, year);
+            cPicked.set(Calendar.MONTH, month);
+            cPicked.set(Calendar.DAY_OF_MONTH, day);
+            datepicked = cPicked.getTime();
 
-            datetv.setText(eventDate);
+
+
+            datetv.setText(  new StringBuilder()
+                    .append(month + 1).append("/").append(day).append("/")
+                    .append(year));
             datetv.setVisibility(View.VISIBLE);
         }
     }

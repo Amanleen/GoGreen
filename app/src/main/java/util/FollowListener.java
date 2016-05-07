@@ -117,4 +117,6 @@ public class FollowListener implements CompoundButton.OnCheckedChangeListener {
             }
         });
     }
+
 }
+

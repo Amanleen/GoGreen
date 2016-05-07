@@ -82,7 +82,9 @@ public class TimelineActivity extends AppCompatActivity
     private static final int FOLLOWING_OP = 1;
     private static final int TIMELINE_FOLLOW_OP = 3;
     private static final int FLAG_FOR_BLOG = 1;
+
     private boolean SEARCH_FLAG = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,8 @@ public class TimelineActivity extends AppCompatActivity
 
         } else {
             setContentView(R.layout.activity_timeline);
+
+
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             Bundle extras = getIntent().getExtras();
@@ -117,6 +121,37 @@ public class TimelineActivity extends AppCompatActivity
             timelinelv.setAdapter(timelineLVAdapter);
 
             getFollowingData(TIMELINE_FOLLOW_OP);
+
+
+
+//            GreenRESTInterface greenRESTInterface = ((GoGreenApplication) getApplication()).getGoGreenApiService();
+//            Call<ArrayList<GreenEntry>> getTimeLineCall = greenRESTInterface.getTimeline(1);
+//            getTimeLineCall.enqueue(new Callback<ArrayList<GreenEntry>>() {
+//                @Override
+//                public void onResponse(Call<ArrayList<GreenEntry>> call, Response<ArrayList<GreenEntry>> response) {
+//                    if (response.isSuccessful()) {
+//                        ArrayList<GreenEntry> res = response.body();
+//                        Collections.reverse(res);
+//                        bufferGreenEntryListArray = res;
+//                        timelineLVAdapter.addAll(res);
+//
+//                    } else {
+//                        Log.e("Timeline", "Error in response " + response.errorBody());
+//                        Toast toast = Toast.makeText(getApplicationContext(), "Sorry! Could't fetch data!", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                        toast.show();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ArrayList<GreenEntry>> call, Throwable t) {
+//                    Log.e("Login", "Failure to authenticate user", t);
+//                    Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
+//                    toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                    toast.show();
+//                }
+//            });
+
 
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -164,8 +199,10 @@ public class TimelineActivity extends AppCompatActivity
                 Toast toast = Toast.makeText(getApplicationContext(), "on failure", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
+
                 Intent i = new Intent(TimelineActivity.this, LoginActivity.class);
                 startActivity(i);
+
             }
         });
 
@@ -225,7 +262,9 @@ public class TimelineActivity extends AppCompatActivity
 
     public void showToastMessage(String message){
         Toast toast= Toast.makeText(getApplicationContext(),
+
                 message, Toast.LENGTH_SHORT);
+
         toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
@@ -233,30 +272,45 @@ public class TimelineActivity extends AppCompatActivity
     private void doMySearch(String query) {
         System.out.println("************ in do my search ****************");
         ArrayList<GreenEntry> searchArrayList = new ArrayList<GreenEntry>();
+
 //        if(query.equalsIgnoreCase("done")){
 //            restoreTimeline();
 //            showToastMessage(" done is end search");
 //        }else {
-        for (int i = 0; i < greenEntryListArray.size(); i++) {
-            String postMessage = greenEntryListArray.get(i).getPostMessage();
-            if (postMessage.contains(query)) {
-                searchArrayList.add(greenEntryListArray.get(i));
-                System.out.println("MATCHED :: " + postMessage);
-            }
-        }
+//        for (int i = 0; i < greenEntryListArray.size(); i++) {
+//            String postMessage = greenEntryListArray.get(i).getPostMessage();
+//            if (postMessage.contains(query)) {
+//                searchArrayList.add(greenEntryListArray.get(i));
+//                System.out.println("MATCHED :: " + postMessage);
+//
+//                if (query.equalsIgnoreCase("done")) {
+//                    restoreTimeline();
+//                    showToastMessage(" done is end search");
+//                } else {
+//                    for (int i = 0; i < greenEntryListArray.size(); i++) {
+//                        String postMessage = greenEntryListArray.get(i).getPostMessage();
+//                        if (postMessage.contains(query)) {
+//                            searchArrayList.add(greenEntryListArray.get(i));
+//                            System.out.println("MATCHED :: " + postMessage);
+//                        }
+//
+//                    }
+//                }
 //        }
-        //System.out.println("************ searchArrayList.size()="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
-        if(searchArrayList.size()>0){
-            timelineLVAdapter.clear();
-            timelineLVAdapter.addAll(searchArrayList);
-            timelineLVAdapter.notifyDataSetChanged();
-            showToastMessage(searchArrayList.size()+" results found for:" + query);
-        }else if(searchArrayList.size()==0) {
-            restoreTimeline();
-            showToastMessage("No results found for:" + query);
-        }
+                //System.out.println("************ searchArrayList.size()="+searchArrayList.size()+" ******** greenEntryListArray="+greenEntryListArray.size());
+                if (searchArrayList.size() > 0) {
+                    timelineLVAdapter.clear();
+                    timelineLVAdapter.addAll(searchArrayList);
+                    timelineLVAdapter.notifyDataSetChanged();
+                    showToastMessage(searchArrayList.size() + " results found for:" + query);
+                } else if (searchArrayList.size() == 0) {
+                    restoreTimeline();
+                    showToastMessage("No results found for:" + query);
+                }
 
-    }
+            }
+
+
 
     public void restoreTimeline(){
         timelineLVAdapter.clear();
@@ -499,34 +553,38 @@ public class TimelineActivity extends AppCompatActivity
                     if((opId==FOLLOWING_OP || opId==TIMELINE_FOLLOW_OP) && response.body()!=null) {
                         following = new ArrayList<User>();
                         temp = response.body();
-                        //System.out.println("************** IN 1 *** temp="+temp);
+
+
                         for(int i=0; i<temp.size();i++){
                             temp.get(i).setImageURL("");
                             following.add(temp.get(i));
                         }
+
+                        //System.out.println("***************** following="+following);
+                        //if(opId==FOLLOWING_OP){
+                           // System.out.println("***************** Be4 getFollowingData");
+
                         //System.out.println("***************** following="+following);
                         if(opId==FOLLOWING_OP){
-                           // System.out.println("***************** Be4 getFollowingData");
+                            System.out.println("***************** Be4 getFollowingData");
+
                             getFollowingData(FOLLOWERS_OP);
                         }
                         else if (opId==TIMELINE_FOLLOW_OP){
                             for(int i=0;i<temp.size();i++){
                                 follow.add(temp.get(i).getUserId());
                             }
-                            System.out.println("***************** Be4 getTimeline follow=");
                             getTimeline();
                         }
                     }
                     else if(opId==FOLLOWERS_OP && response.body()!=null) {
-                        System.out.println("************ IN  2 ***** temp=");
                         follower = new ArrayList<User>();
                         temp = response.body();
                         for(int i=0; i<temp.size();i++){
                             temp.get(i).setImageURL("");
                             follower.add(temp.get(i));
                         }
-                        System.out.println("************ IN  2 ***** follower=");
-                        Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
+                    Intent i = new Intent(getApplicationContext(), FollowingActivity.class);
                         Bundle extras = new Bundle();
                         extras.putSerializable("FOLLOWING",following);
                         extras.putSerializable("FOLLOWER",follower);
@@ -543,6 +601,6 @@ public class TimelineActivity extends AppCompatActivity
             }
         });
     }
+    }
 
 
-}

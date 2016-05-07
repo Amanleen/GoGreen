@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:clickable="true">
 
+
     <!--<ImageView-->
         <!--android:layout_width="@dimen/icon_width"-->
         <!--android:layout_height="@dimen/icon_height"-->
@@ -13,6 +14,7 @@
         <!--android:layout_marginRight="@dimen/fab_margin"-->
         <!--android:clickable="false"-->
         <!--android:focusable="false"/>-->
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,8 +54,7 @@
         android:visibility="gone"
         android:drawableTop="@drawable/ic_person_add_white_24dp"
         android:focusable="false"/>
-    <!--<Space-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_weight="1"/>-->
+
+
 </LinearLayout>
+

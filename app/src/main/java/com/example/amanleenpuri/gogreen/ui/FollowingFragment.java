@@ -155,13 +155,13 @@ public class FollowingFragment  extends Fragment {
             final TextView userNameFollowList = (TextView)convertView.findViewById(R.id.username_follow);
             final TextView userIdFollowList = (TextView) convertView.findViewById(R.id.userIdInfo);
             TextView roleFollowList = (TextView)convertView.findViewById(R.id.role_follow);
-            ImageView userProfilePicFollowList = (ImageView)convertView.findViewById(R.id.user_image_follow);
+//            ImageView userProfilePicFollowList = (ImageView)convertView.findViewById(R.id.user_image_follow);
             ToggleButton followIcon = (ToggleButton) convertView.findViewById(R.id.become_follower_icon);
 
             userIdFollowList.setText(String.valueOf(p.getUserId()));
             userNameFollowList.setText(p.getFirstName() + " " + p.getLastName());
             roleFollowList.setText(p.getRoleType());
-            userProfilePicFollowList.setImageBitmap(getStringToBitMap(p.getImageURL()));
+//            userProfilePicFollowList.setImageBitmap(getStringToBitMap(p.getImageURL()));
             //userProfilePicFollowList.setImageResource(R.mipmap.profilepic);
             if(mPage==2){
                 followIcon.setVisibility(View.VISIBLE);
@@ -190,7 +190,7 @@ public class FollowingFragment  extends Fragment {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), TimelineActivity.class);
+                    Intent intent = new Intent(getActivity(), MainTimelineActivity.class);
                     startActivity(intent);
                 }
             });

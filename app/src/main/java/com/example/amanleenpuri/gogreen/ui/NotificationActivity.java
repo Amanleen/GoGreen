@@ -44,16 +44,16 @@ import ws.remote.GreenRESTInterface;
  */
 public class NotificationActivity extends AppCompatActivity {
 
-    ImageView cancel;
+    //ImageView cancel;
     ArrayList<model.Notification> noteData;
     ListView noteList;
-    Event e;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_layout);
-        cancel= (ImageView) findViewById(R.id.notification_cancel);
+        //cancel= (ImageView) findViewById(R.id.notification_cancel);
         noteList=(ListView)findViewById(R.id.notification_list);
 
         if(savedInstanceState==null){
@@ -76,134 +76,143 @@ public class NotificationActivity extends AppCompatActivity {
         //Log.v("@@@@@@@@@@@",noteData.toString());
 
         noteList.setAdapter(new NoteListViewAdapter(this,noteData));
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NotificationActivity.this, TimelineActivity.class);
-                startActivity(intent);
-            }
-        });
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(NotificationActivity.this, TimelineActivity.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 
-    private ArrayList setNoteList() throws InterruptedException {
-        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
-        Call<List<Notification>> getNs = greenRESTInterface.getAllNotifications();
-        getNs.enqueue(new Callback<List<Notification>>() {
-
-            List<Notification> arrN=new ArrayList<Notification>();
-            @Override
-            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
-                if (response.isSuccessful()) {
-                    Log.v("##############",response.body().toString());
-                    arrN = response.body();
-                    for(int i=0;i<arrN.size();i++){
-                        noteData.add(arrN.get(i));
-                        Log.v("##############",arrN.get(i).toString());
-                    }
-                } else {
-                    Log.e("Signup", "Error in response " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Notification>> call, Throwable t) {
-                Log.e("NOTIFICATIONS", "Failure to fetch Notifications", t);
-            }
-        });
-         /*Thread t1 = new Thread(new Runnable() {
-            public void run() {
-
-                try{
-                    JSONObject jsonObject = new JSONObject();
-                    URL url = new URL("http://192.168.0.6:8080/GoGreenServer/AllNotificationsServlet");
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-
-                    connection.setDoOutput(true);
-                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-                    out.write(jsonObject.toString());
-                    out.close();
-
-                    //connection.disconnect();
-
-                    // connection.setDoInput(true);
-                    int responseCode = connection.getResponseCode();
-                    Log.d("Response Code = ",String.valueOf(responseCode));
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    String returnString="";
-
-                   // while ((returnString = in.readLine()) != null)
-                    //{
-//                      doubledValue= Integer.parseInt(returnString);
-                      //  Log.d("ReturnString", returnString);
-      //                  JSONArray jsonArray = new JSONArray (returnString);
-    //                    if (jsonArray != null) {
-  //                          int len = jsonArray.length();
-//                            for (int i=0;i<len;i++){
-
-                            //    noteData.add((Notification)jsonArray.get(i));
-                          //  }
-                        //}
-                        //JSONObject notifications = new JSONObject(returnString);
-                        //noteData = (ArrayList<Notification>)returnString;
-
-                    //}
-                    //noteData.add(new Gson().fromJson(returnString, new TypeToken<List<model.Notification>>(){}.getType()));
-                    Gson gson = new Gson();
-                    noteData = gson.fromJson(in, new TypeToken<List<Notification>>(){}.getType());
-                    Log.v("$$$$$$$$$$$",noteData.toString());
-                    for(int i=0;i<noteData.size();i++){
-                        Log.v("$$$$$$$$$$$",noteData.get(i).getNotificationMessage());
-                    }
-
-                    in.close();
-
-
-                }catch(Exception e)
-                {
-                    Log.d("Exception",e.toString());
-                }
-
-            }
-        });
-        t1.start();
-        t1.join();*/
-        /*noteData.add(new Notification("Amrata","Diseased Sunflowers"));
-        noteData.add(new Notification("Amanleen","Use Roundup"));
-        noteData.add(new Notification("Amrata","Bad Soil"));
-        noteData.add(new Notification("Amanleen","Temporary"));
-        noteData.add(new Notification("Amrata","Event:Mission Peak Plantation Camp"));*/
-        return noteData;
-    }
+//    private ArrayList setNoteList() throws InterruptedException {
+//        GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
+//        Call<List<Notification>> getNs = greenRESTInterface.getAllNotifications();
+//        getNs.enqueue(new Callback<List<Notification>>() {
+//
+//            List<Notification> arrN=new ArrayList<Notification>();
+//            @Override
+//            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+//                if (response.isSuccessful()) {
+//                    Log.v("##############",response.body().toString());
+//                    arrN = response.body();
+//                    for(int i=0;i<arrN.size();i++){
+//                        noteData.add(arrN.get(i));
+//                        Log.v("##############",arrN.get(i).toString());
+//                    }
+//                } else {
+//                    Log.e("Signup", "Error in response " + response.errorBody());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Notification>> call, Throwable t) {
+//                Log.e("NOTIFICATIONS", "Failure to fetch Notifications", t);
+//            }
+//        });
+//         /*Thread t1 = new Thread(new Runnable() {
+//            public void run() {
+//
+//                try{
+//                    JSONObject jsonObject = new JSONObject();
+//                    URL url = new URL("http://192.168.0.6:8080/GoGreenServer/AllNotificationsServlet");
+//                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+//
+//                    connection.setDoOutput(true);
+//                    OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+//                    out.write(jsonObject.toString());
+//                    out.close();
+//
+//                    //connection.disconnect();
+//
+//                    // connection.setDoInput(true);
+//                    int responseCode = connection.getResponseCode();
+//                    Log.d("Response Code = ",String.valueOf(responseCode));
+//                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//
+//                    String returnString="";
+//
+//                   // while ((returnString = in.readLine()) != null)
+//                    //{
+////                      doubledValue= Integer.parseInt(returnString);
+//                      //  Log.d("ReturnString", returnString);
+//      //                  JSONArray jsonArray = new JSONArray (returnString);
+//    //                    if (jsonArray != null) {
+//  //                          int len = jsonArray.length();
+////                            for (int i=0;i<len;i++){
+//
+//                            //    noteData.add((Notification)jsonArray.get(i));
+//                          //  }
+//                        //}
+//                        //JSONObject notifications = new JSONObject(returnString);
+//                        //noteData = (ArrayList<Notification>)returnString;
+//
+//                    //}
+//                    //noteData.add(new Gson().fromJson(returnString, new TypeToken<List<model.Notification>>(){}.getType()));
+//                    Gson gson = new Gson();
+//                    noteData = gson.fromJson(in, new TypeToken<List<Notification>>(){}.getType());
+//                    Log.v("$$$$$$$$$$$",noteData.toString());
+//                    for(int i=0;i<noteData.size();i++){
+//                        Log.v("$$$$$$$$$$$",noteData.get(i).getNotificationMessage());
+//                    }
+//
+//                    in.close();
+//
+//
+//                }catch(Exception e)
+//                {
+//                    Log.d("Exception",e.toString());
+//                }
+//
+//            }
+//        });
+//        t1.start();
+//        t1.join();*/
+//        /*noteData.add(new Notification("Amrata","Diseased Sunflowers"));
+//        noteData.add(new Notification("Amanleen","Use Roundup"));
+//        noteData.add(new Notification("Amrata","Bad Soil"));
+//        noteData.add(new Notification("Amanleen","Temporary"));
+//        noteData.add(new Notification("Amrata","Event:Mission Peak Plantation Camp"));*/
+//        return noteData;
+//    }
 
     private class NoteListViewAdapter extends ArrayAdapter<model.Notification> {
 
         NoteListViewAdapter(Context context, ArrayList<model.Notification> list){
             super(context, android.R.layout.simple_list_item_1,list);
-            Log.v("$$$$$$$$$$$","Inside NOTILISTVIEW ADAPTER");
+            Log.v("%%%%%%%%%%%%%","Inside NOTILISTVIEW ADAPTER");
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             model.Notification p = getItem(position);
-            Log.v("$$$$$$$$$$$",p.toString());
+            //Log.v("%%%%%%%%%%%%%",p.toString());
 
             if(convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.notification_item, parent, false);
             }
             TextView fromView=(TextView) convertView.findViewById(R.id.note_from);
+            Button nb = (Button) convertView.findViewById(R.id.viewNotifDetails);
             final TextView subjectView=(TextView) convertView.findViewById(R.id.note_subject);
 
             fromView.setText(p.getByUserName());
             subjectView.setText(p.getNotificationMessage());
+
             final int eventId = p.getEventId();
+            Log.v ("############",String.valueOf(eventId));
             final String host =p.getByUserName();
-            convertView.setOnClickListener(new View.OnClickListener() {
+//            nb.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
+            nb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   Log.v ("%%%%%%%%%%%%%",subjectView.getText().toString());
-                    if(subjectView.getText().toString().contains("Event") || subjectView.getText().toString().contains("Event")){
-                       e =new Event();
+
+                  //  if(subjectView.getText().toString().contains("event") || subjectView.getText().toString().contains("Event")){
+
                         GreenRESTInterface greenRESTInterface = ((GoGreenApplication)getApplication()).getGoGreenApiService();
                         Call<model.Event> getEvent = greenRESTInterface.getAnEvent(eventId);
                         Log.v ("%%%%%%%%%%%%%",String.valueOf(eventId));
@@ -215,8 +224,10 @@ public class NotificationActivity extends AppCompatActivity {
 
 
                                 if (response.isSuccessful()) {
-                                    Log.v("##############",response.body().toString());
+                                    Event e =new Event();
+                                    Log.v("%%%%%%%%%%%%%",response.body().toString()+"##############");
                                     e = response.body();
+                                    Log.v("%%%%%%%%%%%%%",e.toString()+"##############");
                                     Intent intent = new Intent(NotificationActivity.this, EventDetailsActivity.class);
                                     intent.putExtra("EventObj",e);
                                     intent.putExtra("Host",host);
@@ -238,10 +249,7 @@ public class NotificationActivity extends AppCompatActivity {
                         //intent.putExtra("EventObj",e);
 
                         //startActivity(intent);
-                    }else {
-                        Intent intent = new Intent(getContext(), AnswerActivity.class);
-                        startActivity(intent);
-                    }
+
                 }
             });
 

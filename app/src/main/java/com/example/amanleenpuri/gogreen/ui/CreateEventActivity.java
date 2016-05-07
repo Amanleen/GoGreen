@@ -171,10 +171,6 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
                 if(invalidEditText != null){
                     showToast(invalidEditText.getTag() + " field cannot be empty.");
-                }else if (datetv.getText().toString().isEmpty()){
-                        showToast("Event Date is mandatory field");
-                }else if(!datetv.getText().toString().isEmpty() && datepicked.before(today)) {
-                        showToast("Date specified for event shuld not be BEFORE today");
                 }else if(!(startTimetv.getText().toString()).isEmpty() && !(endTimetv.getText().toString()).isEmpty()) {
                     String startTime[] = (startTimetv.getText().toString()).split(":");
                     String endTime[] = (endTimetv.getText().toString()).split(":");
@@ -190,8 +186,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     }
                     //showToast("Please pick start and end time!");
                     //createEvent=false;
-                }
-                //else {
+                //}else {
                     event.setEventDate(datetv.getText().toString());
                     event.setEventStartTime(startTimetv.getText().toString());
                     event.setEventEndTime(endTimetv.getText().toString());
@@ -242,7 +237,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                             toast.show();
                         }
                     });
-               // }
+                }
             }
         });
 

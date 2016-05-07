@@ -10,8 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="10sp"
+        android:textSize="17sp"
         android:paddingLeft="5dp"
+        style="@style/EventLabelTextView"
         android:id="@+id/tv_question"
         android:textColor="#003300"
         android:layout_gravity="left|bottom"
@@ -33,6 +34,7 @@
     <Button android:id="@+id/viewAnsButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:text="@string/viewAnswers"/>
 
     <LinearLayout android:id="@+id/ans_layout"

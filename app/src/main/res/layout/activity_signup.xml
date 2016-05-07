@@ -156,7 +156,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_passwordSignUp"
@@ -173,7 +173,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:ems="10"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/et_reEnterPasswordSignUp"
@@ -181,13 +181,12 @@
 
 
         <Button
-            android:id="@+id/btn_signUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sign_up"
-            android:layout_gravity="center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:background="@color/colorPrimaryDark" />
+            android:id="@+id/btn_signUp"
+            android:layout_gravity="center_horizontal"
+            style="@style/ButtonAppearance" />
 
     </LinearLayout>
 </ScrollView>

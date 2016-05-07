@@ -74,6 +74,7 @@ public class BlogTagAskActivity extends AppCompatActivity implements View.OnClic
               if(getIntent().hasExtra("imgArray")) {
                   imageView.setVisibility(View.VISIBLE);
                 _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);		              _bm = BitmapFactory.decodeByteArray(getIntent().getByteArrayExtra("imgArray"),0,getIntent().getByteArrayExtra("imgArray").length);
+                  IMAGE_BIT_MAP_IN_STRING = ImageHelper.getBitMapToString(_bm);
                   imageView.setImageBitmap(_bm);
             }
 

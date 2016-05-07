@@ -74,6 +74,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         eventVenue.setText(ev.getEventLocation());
 
         ltln = getLocationFromAddress(EventDetailsActivity.this, eventVenue.getText().toString());
+        Log.v("%%%%%MY ADDR %%%%%%%", ev.toString());
         Log.v("%%%%%MY ADDR %%%%%%%", eventVenue.getText().toString());
         Log.v("%%%%%MY ADDR %%%%%%%", ltln.toString());
 
@@ -126,10 +127,10 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
     @Override
     public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+       super.onStart();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client.connect();
 //        Action viewAction = Action.newAction(
 //                Action.TYPE_VIEW, // TODO: choose an action type.
@@ -148,8 +149,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        Action viewAction = Action.newAction(
 //                Action.TYPE_VIEW, // TODO: choose an action type.
 //                "EventDetails Page", // TODO: Define a title for the content shown.
@@ -161,7 +162,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 //                Uri.parse("android-app://com.example.amanleenpuri.gogreen.ui/http/host/path")
 //        );
 //        AppIndex.AppIndexApi.end(client, viewAction);
-      client.disconnect();
+//      client.disconnect();
     }
 }
 
